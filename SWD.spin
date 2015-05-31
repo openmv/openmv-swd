@@ -1,19 +1,46 @@
-con
+' by: Kwabena W. Agyeman - kwagyeman@openmv.io
 
 var
 
-  long cog_id
-
-pub write_pointer_available
-
-pub get_write_pointer
+  long cog_id, swd_action, data_block[128] ' Do Not Rearrange!
   
+pub internal_block_address
+
+  return @data_block
+
+pub write_block
+
+  if swd_action == "E"
+    abort 1
+  
+  swd_action := "W"
+
+pub read_block
+
+  if swd_action == "E"
+    abort 1
+
+  swd_action := "R"
+
+pub busy
+
+  if swd_action == "E"
+    abort 1
+
+  return swd_action <> 0
+
 pub start(io_pin, clk_pin, reset_pin)
 
   swdio_pin := |<io_pin
   swdclk_pin := |<clk_pin
 
-  cog_id := cognew(@cog_addr, 0) + 1
+  outa[reset_pin] := 0 
+  dira[reset_pin] := 1
+  waitcnt((clkfreq / 1000) + cnt)
+  dira[reset_pin] := 0
+  
+  swd_action := 0
+  cog_id := cognew(@cog_addr, @swd_action) + 1
 
 pub stop
 
@@ -22,8 +49,15 @@ pub stop
 
 dat
 
-cog_addr      or dira, swdclk_pin  
+' /////////// Init
 
+cog_addr      mov action_addr, par
+              mov block_addr, par
+              add block_addr, #4            
+
+              or dira, swdclk_pin  
+
+' /////////// Main
 
 do_init       call #send_res
               call #send_seq
@@ -31,7 +65,6 @@ do_init       call #send_res
 
               mov x, #%0100
               call #send_req
-
 
 send_res      mov i, #100
               or outa, swdio_pin 
@@ -107,6 +140,8 @@ send_req_ret  ret
 
 swdio_pin     long 0
 swdclk_pin    long 0
+action_addr   long 0
+block_addr    long 0
 
 i             res 1
 j             res 1
