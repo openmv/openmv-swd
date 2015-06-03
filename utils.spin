@@ -36,7 +36,7 @@ pub get_negedge(pin)
 
 pub set_freq(pin, freq)
 
-  dira_enable := (dira_enable & !|<pin) | ((freq >= 0) & |<pin)
+  dira_enable := (dira_enable & !|<pin) | ((freq => 0) & |<pin)
   outa_frequency[pin & 31] := SAMPLE_FREQ / (freq #> 0)
 
 pub start

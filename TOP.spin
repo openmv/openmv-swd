@@ -8,6 +8,7 @@ con
   NUM_SWD = 5
 
   PROGRAM_BUTTON = 20
+  PROGRAM_STATUS = 21
 
   SD_DO_PIN = 22
   SD_CLK_PIN = 23
@@ -39,15 +40,17 @@ var
 
   long board_state[NUM_SWD], remaining_blocks[NUM_SWD]
   
-pub main | i, x, r
+pub main | i, x, y, r
 
   fat.FATEngineStart(SD_DO_PIN, SD_CLK_PIN, SD_DI_PIN, SD_CS_PIN, SD_WP_PIN, SD_CD_PIN, -1, -1, -1)
   utl.start
 
   repeat
     x := utl.get_posedge(PROGRAM_BUTTON)
-  
+    
+    y := true
     repeat i from 0 to constant(NUM_SWD - 1)
+      y and= utl.get(swd_res_pin[i])
       case board_state[i]
       
         SWD_IDLE:
@@ -90,12 +93,14 @@ pub main | i, x, r
         SWD_FATAL_ERROR:
           fatal_error(i)
 
+    utl.set_freq(PROGRAM_STATUS, !y) 
+
 pri begin_programming(port) ' may abort... returns 0 normally - non-zero on abort
 
   fat[port].mountPartition(0)
   fat[port].openFile(@firmware_file_name, "R")
 
-  swd[port].stop
+  swd[port].stop(swd_res_pin[port])
   swd[port].start(swd_io_pin[port], swd_clk_pin[port], swd_res_pin[port])
 
   remaining_blocks[port] := (fat[port].fileSize + 511) / 512
@@ -161,7 +166,7 @@ pri verify_block(port) | i ' may abort... returns 0 normally - non-zero on abort
 
 pri finished(port) ' may abort... returns 0 normally - non-zero on abort
 
-  swd[port].stop
+  swd[port].stop(swd_res_pin[port])
 
   fat[port].unmountPartition
 
