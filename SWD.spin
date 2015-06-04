@@ -3,22 +3,29 @@
 con
 
   TARGET_ID_CODE_1 = $2BA0_1477
-  CTRL_STAT_WRITE_VALUE = $5400_0000
-  CTRL_STAT_READ_VALUE = $F400_0000
-  CTRL_STAT_READ_MASK = $FF00_0000
+  CTRL_STAT_WRITE_VALUE = $5000_0000
+  CTRL_STAT_READ_VALUE = $F000_0000
+  CTRL_STAT_READ_MASK = $F000_0000
   TARGET_ID_CODE_2 = $2477_0011
 
   HALT_ADDRESS = $E000_EDF0
   HALT_VALUE = $A05F_0003
+  HALT_2_ADDRESS = $E000_EDFC
+  HALT_2_VALUE = $0000_0001
+  HALT_3_ADDRESS = $E000_ED0C
+  HALT_3_VALUE = $FA05_0004
+  
+  FLASH_UNLOCK_ADDRESS = $4002_3C04
+  FLASH_UNLOCK_KEY_1 = $4567_0123
+  FLASH_UNLOCK_KEY_2 = $CDEF_89AB
 
-  FLASH_UNLOCK_ADDRESS = $4002_3C0C
-  FLASH_UNLOCK_KEY_1 = $89AB_CDEF
-  FLASH_UNLOCK_KEY_2 = $0203_0405
+  MASS_ERASE_ADDRESS = $4002_3C10
+  MASS_ERASE_VALUE = $0001_8206
 
-  PROGRAM_UNLOCK_ADDRESS = $4002_3C10
-  PROGRAM_UNLOCK_KEY_1 = $8C9D_AEBF
-  PROGRAM_UNLOCK_KEY_2 = $1314_1516
-
+  MASS_ERASE_STATUS_ADDRESS = $4002_3C0C
+  MASS_ERASE_STATUS_VALUE = $0001_0000
+  MASS_ERASE_STATUS_MASK = $0001_0000
+  
   DATA_ADDRESS = $08000000
   
 var
@@ -183,20 +190,28 @@ if_nz         jmp #fatal_error
               mov y, #0
               call #send_req
 
-              ' setup control (32-bit auto-incrementing)
+              ' setup control
 
               mov x, #%1100
               call #send_req
 
               mov x, #%1000
-              andn y, #$FF
-              or y, #$12
+              andn y, #$07
+              or y, #$02
               call #send_req
               
               ' halt processor
 
               mov a, halt_a
               mov b, halt_v
+              call #ahb_w
+
+              mov a, halt_2_a
+              mov b, halt_2_v
+              call #ahb_w
+
+              mov a, halt_3_a
+              mov b, halt_3_v
               call #ahb_w
 
               ' unlock flash
@@ -209,15 +224,20 @@ if_nz         jmp #fatal_error
               mov b, flash_key_2
               call #ahb_w
 
-              ' unlock program
+              ' erase flash
 
-              mov a, program_key_a
-              mov b, program_key_1
+              mov a, flash_ctrl_a
+              mov b, flash_ctrl_v
               call #ahb_w
 
-              mov a, program_key_a
-              mov b, program_key_2
-              call #ahb_w             
+              ' wait till done
+
+w_init_l      mov a, flash_sts_a
+              call #ahb_r
+
+              and b, flash_sts_m
+              cmp b, flash_sts_v wz
+if_nz         jmp #w_init_l      
 
 w_init_ret    ret
 
@@ -229,14 +249,21 @@ init_id_code2 long TARGET_ID_CODE_2
 
 halt_a        long HALT_ADDRESS
 halt_v        long HALT_VALUE
+halt_2_a      long HALT_2_ADDRESS
+halt_2_v      long HALT_2_VALUE
+halt_3_a      long HALT_3_ADDRESS
+halt_3_v      long HALT_3_VALUE
 
 flash_key_a   long FLASH_UNLOCK_ADDRESS
 flash_key_1   long FLASH_UNLOCK_KEY_1
 flash_key_2   long FLASH_UNLOCK_KEY_2
 
-program_key_a long PROGRAM_UNLOCK_ADDRESS
-program_key_1 long PROGRAM_UNLOCK_KEY_1
-program_key_2 long PROGRAM_UNLOCK_KEY_1
+flash_ctrl_a  long MASS_ERASE_ADDRESS
+flash_ctrl_v  long MASS_ERASE_VALUE
+
+flash_sts_a   long MASS_ERASE_STATUS_ADDRESS
+flash_sts_v   long MASS_ERASE_STATUS_VALUE
+flash_sts_m   long MASS_ERASE_STATUS_MASK
 
 ' /////////// Sub Read Init
 
@@ -280,7 +307,7 @@ ahb_r_ret     ret
 
 ' /////////// Sub Send Reset
 
-send_res      mov i, #100
+send_res      mov i, #200
               or outa, swdio_pin 
 send_res_l    xor outa, swdclk_pin    
               djnz i, #send_res_l
