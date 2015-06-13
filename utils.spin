@@ -59,7 +59,7 @@ pri driver | i, t, raw_ina[8], outa_counters[8]
     repeat i from 0 to 31
       raw_ina.byte[i] += raw_ina.byte[i] + ina[i]
 
-      ifnot !raw_ina.byte[i]
+      ifnot !~raw_ina.byte[i]
         ifnot processed_ina[i]
           processed_ina[i] := true
           ifnot posedge_ina[i]
@@ -71,5 +71,5 @@ pri driver | i, t, raw_ina[8], outa_counters[8]
           ifnot negedge_ina[i]
             negedge_ina[i] := true
 
-      outa[i] := outa_counters.byte[i] => (outa_frequency[i] / 2)
+      outa[i] := outa_counters.byte[i] => (outa_frequency[i] >> 1)
       outa_counters.byte[i] := (outa_counters.byte[i] + 1) // outa_frequency[i]
