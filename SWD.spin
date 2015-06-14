@@ -7,7 +7,7 @@ con
   CTRL_STAT_R_VALUE = $F400_0000
   CTRL_STAT_M_VALUE = $FF00_0000
   TARGET_ID_CODE_2 = $2477_0011
-  CSW_W_VALUE = $2300_0002
+  CSW_W_VALUE = $2300_0012
 
   HALT_1_ADDRESS = $E000_EDF0
   HALT_1_VALUE = $A05F_0003
@@ -27,7 +27,7 @@ con
   MASS_ERASE_STATUS_R = $0001_0000 ' STM32F427/07
   MASS_ERASE_STATUS_M = $0001_0000 ' STM32F427/07
 
-  DATA_ADDRESS = $0800_0000
+  DATA_ADDRESS = $0800_0000 ' MUST BE 4KB ALIGNED
 
 var
 
@@ -109,14 +109,34 @@ if_z          call #do_r
 do_w          cmp write_cnt, #511 wz
 if_z          call #w_init
 
+'               mov write_cnt, #128
+'               mov c, block_addr
+' do_w_l        mov a, write_ptr
+'               rdlong b, c
+'               call #ahb_w
+'               add c, #4
+'               add write_ptr, #4
+'               djnz write_cnt, #do_w_l
+
+              ' FASTER BEGIN - REQ 4KB ALIGNED
+
+              mov x, #%1010 ' AP-TAR Write
+              mov y, write_ptr
+              call #send_req
+
+              add write_ptr, D512
+
               mov write_cnt, #128
               mov c, block_addr
-do_w_l        mov a, write_ptr
-              rdlong b, c
-              call #ahb_w
+
+do_w_l        mov x, #%1011 ' AP-DRW Write
+              rdlong y, c
+              call #send_req
+
               add c, #4
-              add write_ptr, #4
               djnz write_cnt, #do_w_l
+
+              ' FASTER END
 
               mov x, #0
               wrlong x, action_addr
@@ -130,14 +150,41 @@ write_ptr     long DATA_ADDRESS
 do_r          cmp read_cnt, #511 wz
 if_z          call #r_init
 
-              mov read_cnt, #128
+'               mov read_cnt, #128
+'               mov c, block_addr
+' do_r_l        mov a, read_ptr
+'               call #ahb_r
+'               wrlong b, c
+'               add c, #4
+'               add read_ptr, #4
+'               djnz read_cnt, #do_r_l
+
+              ' FASTER BEGIN - REQ 4KB ALIGNED
+
+              mov x, #%1010 ' AP-TAR Write
+              mov y, read_ptr
+              call #send_req
+
+              add read_ptr, D512
+
+              mov x, #%1111 ' AP-DRW Read
+              call #send_req
+
+              mov read_cnt, #127
               mov c, block_addr
-do_r_l        mov a, read_ptr
-              call #ahb_r
-              wrlong b, c
+
+do_r_l        mov x, #%1111 ' AP-DRW Read
+              call #send_req
+              wrlong y, c
+
               add c, #4
-              add read_ptr, #4
               djnz read_cnt, #do_r_l
+
+              mov x, #%0111 ' DP-RDBUFF Read
+              call #send_req
+              wrlong y, c
+
+              ' FASTER END
 
               mov x, #0
               wrlong x, action_addr
@@ -145,6 +192,8 @@ do_r_l        mov a, read_ptr
 do_r_ret      ret
 read_cnt      long 511 ' first read value trigger
 read_ptr      long DATA_ADDRESS
+
+D512          long 512
 
 ' /////////// Sub Write Init
 
@@ -281,7 +330,6 @@ flash_sts_m   long MASS_ERASE_STATUS_M
 ' /////////// Sub Read Init
 
 r_init
-
 r_init_ret    ret
 
 ' /////////// Sub AHB Write
@@ -296,8 +344,8 @@ ahb_w         mov x, #%1010 ' AP-TAR Write
               mov y, b
               call #send_req
 
-              mov x, #%0111 ' DP-RDBUFF Read
-              call #send_req
+              ' mov x, #%0111 ' DP-RDBUFF Read
+              ' call #send_req
 
 ahb_w_ret     ret
 
@@ -415,13 +463,13 @@ send_req_tmp  andn dira, swdio_pin
 
 ' /////////// Sub Clock Pulse
 
-clk_pulse     nop
+clk_pulse     ' nop
               or outa, swdclk_pin
-              nop
+              ' nop
 clk_pulse_m   nop
-              nop
+              ' nop
               andn outa, swdclk_pin
-              nop
+              ' nop
 clk_pulse_ret ret
 
 ' /////////// Sub Fatal Error

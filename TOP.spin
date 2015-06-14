@@ -15,7 +15,7 @@ con
   SD_DI_PIN = 24
   SD_CS_PIN = 25
   SD_WP_PIN = -1
-  SD_CD_PIN = -1
+  SD_CD_PIN = -1 ' SD_DI_PIN
 
 dat
 
@@ -24,7 +24,7 @@ dat
   swd_res_pin byte 13 ' 02, 06, 10, 14, 18
   swd_led_pin byte 27 ' 03, 07, 11, 15, 19
 
-  firmware_file_name byte "F2.BIN", 0 ' "FW.BIN", 0 ' 8.3 file name
+  firmware_file_name byte "F1.BIN", 0 ' "OPENMV.BIN", 0 ' 8.3 file name
 
 obj
 
@@ -127,10 +127,13 @@ pri programming(port) ' may abort... returns 0 normally - non-zero on abort
     else
       board_state[port] := SWD_BEGIN_VERIFYING
 
-pri program_block(port) ' may abort... returns 0 normally - non-zero on abort
+pri program_block(port) | x ' may abort... returns 0 normally - non-zero on abort
 
-  longfill(swd[port].internal_block_address, 0, 128)
-  fat[port].readData(swd[port].internal_block_address, 512)
+  x := swd[port].internal_block_address
+
+  longfill(x, 0, 128)
+  fat[port].readData(x, 512)
+
   swd[port].write_block
 
 pri begin_verifying(port) ' may abort... returns 0 normally - non-zero on abort
@@ -160,10 +163,15 @@ pri verifying(port) ' may abort... returns 0 normally - non-zero on abort
     else
       board_state[port] := SWD_FINISHED
 
-pri verify_block(port) | i ' may abort... returns 0 normally - non-zero on abort
+pri verify_block(port) | i, x, data[128] ' may abort... returns 0 normally - non-zero on abort
+
+  x := swd[port].internal_block_address
+
+  longfill(@data, 0, 128)
+  fat[port].readData(@data, 512)
 
   repeat i from 0 to 127
-    if fat[port].readLong <> long[swd[port].internal_block_address][i]
+    if data[i] <> long[x][i]
       abort 1
 
 pri finished(port) ' may abort... returns 0 normally - non-zero on abort
