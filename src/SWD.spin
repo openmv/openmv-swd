@@ -85,6 +85,8 @@ dat
 
 ' /////////// Init
 
+              org 0
+
 cog_addr      mov action_addr, par
               mov block_addr, par
               add block_addr, #4
@@ -491,3 +493,5 @@ c             res 1
 i             res 1
 x             res 1
 y             res 1
+
+              fit 496
