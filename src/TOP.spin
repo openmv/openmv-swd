@@ -5,26 +5,26 @@ con
   _CLKFREQ = 80_000_000
   _CLKMODE = XTAL1 + PLL16X
 
-  NUM_SWD = 1 ' 5
+  NUM_SWD = 5
 
-  PROGRAM_BUTTON = 0 ' 20
-  PROGRAM_STATUS = 26 ' 21
+  PROGRAM_BUTTON = 17
+  PROGRAM_STATUS = 23
 
-  SD_DO_PIN = 22
-  SD_CLK_PIN = 23
-  SD_DI_PIN = 24
-  SD_CS_PIN = 25
+  SD_DO_PIN = 24
+  SD_CLK_PIN = 25
+  SD_DI_PIN = 26
+  SD_CS_PIN = 27
   SD_WP_PIN = -1
-  SD_CD_PIN = -1 ' SD_DI_PIN
+  SD_CD_PIN = -1
 
 dat
 
-  swd_io_pin byte 14 ' 00, 04, 08, 12, 16
-  swd_clk_pin byte 15 ' 01, 05, 09, 13, 17
-  swd_res_pin byte 13 ' 02, 06, 10, 14, 18
-  swd_led_pin byte 27 ' 03, 07, 11, 15, 19
+  swd_io_pin byte 14, 11, 08, 05, 02
+  swd_clk_pin byte 15, 12, 07, 04, 01
+  swd_res_pin byte 13, 10, 09, 06, 03
+  swd_led_pin byte 18, 19, 20, 21, 22
 
-  firmware_file_name byte "F1.BIN", 0 ' "OPENMV.BIN", 0 ' 8.3 file name
+  firmware_file_name byte "OPENMV.BIN", 0 ' 8.3 file name
 
 obj
 
