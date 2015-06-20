@@ -83,9 +83,9 @@ pub stop(reset_pin)
 
 dat
 
-' /////////// Init
-
               org 0
+
+' /////////// Init
 
 cog_addr      mov action_addr, par
               mov block_addr, par
