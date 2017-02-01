@@ -1,0 +1,46 @@
+/****************************************************************************
+**
+** Copyright (C) 2016 The Qt Company Ltd.
+** Contact: https://www.qt.io/licensing/
+**
+** Commercial License Usage
+** Licensees holding valid commercial Qt licenses may use this file in
+** accordance with the commercial license agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and The Qt Company. For licensing terms
+** and conditions see https://www.qt.io/terms-conditions. For further
+** information use the contact form at https://www.qt.io/contact-us.
+**
+** GNU General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License version 3 as published by the Free Software
+** Foundation with exceptions as appearing in the file LICENSE.GPL3-EXCEPT
+** included in the packaging of this file. Please review the following
+** information to ensure the GNU General Public License requirements will
+** be met: https://www.gnu.org/licenses/gpl-3.0.html.
+**
+****************************************************************************/
+
+#ifndef APP_VERSION_H
+#define APP_VERSION_H
+
+#define STRINGIFY_INTERNAL(x) #x
+#define STRINGIFY(x) STRINGIFY_INTERNAL(x)
+
+#define OMV_SWD_VERSION $${OPENMVSWD_VERSION}
+#define OMV_SWD_VERSION_STR STRINGIFY(OMV_SWD_VERSION)
+
+#define OMV_SWD_VERSION_MAJOR $$replace(OPENMVSWD_VERSION, "^(\\d+)\\.\\d+\\.\\d+(-.*)?$", \\1)
+#define OMV_SWD_VERSION_MINOR $$replace(OPENMVSWD_VERSION, "^\\d+\\.(\\d+)\\.\\d+(-.*)?$", \\1)
+#define OMV_SWD_VERSION_RELEASE $$replace(OPENMVSWD_VERSION, "^\\d+\\.\\d+\\.(\\d+)(-.*)?$", \\1)
+
+const char * const OMV_SWD_VERSION_LONG = OMV_SWD_VERSION_STR;
+const char * const OMV_SWD_AUTHOR       = \"OpenMV, LLC\";
+const char * const OMV_SWD_YEAR         = \"2017\";
+
+#undef OMV_SWD_VERSION_STR
+#undef OMV_SWD_VERSION
+#undef STRINGIFY
+#undef STRINGIFY_INTERNAL
+
+#endif // APP_VERSION_H

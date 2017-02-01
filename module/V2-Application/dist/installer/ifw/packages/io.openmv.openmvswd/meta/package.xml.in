@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<Package>
+  <DisplayName>OpenMV SWD</DisplayName>
+  <Description>Installs the OpenMV SWD.</Description>
+  <Version>{version}</Version>
+  <ReleaseDate>{date}</ReleaseDate>
+  <Name>io.openmv.openmvswd</Name>
+</Package>

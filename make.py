@@ -127,7 +127,7 @@ def make():
     qtcdir = find_qtcdir()
     ifdir = find_ifdir()
 
-    builddir = os.path.join(__folder__, "build")
+    builddir = os.path.join(__folder__, "module", "build")
     installdir = os.path.join(builddir, "install")
 
     if not os.path.exists(builddir):
@@ -137,30 +137,30 @@ def make():
 
     if sys.platform.startswith('win'):
         if os.system("cd " + builddir +
-        " && qmake ../qt-creator/qtcreator.pro -r -spec win32-g++" +
+        " && qmake ../V2-Application/qt.pro -r -spec win32-g++" +
         " && jom -j" + str(cpus) +
         " && jom installer INSTALL_ROOT="+installdir + " IFW_PATH="+ifdir):
             sys.exit("Make Failed...")
-        installer = glob.glob(os.path.join(builddir, "openmv-ide-*.exe"))[0]
+        installer = glob.glob(os.path.join(builddir, "openmv-swd-*.exe"))[0]
 
     elif sys.platform.startswith('darwin'):
         if os.system("cd " + builddir +
-        " && qmake ../qt-creator/qtcreator.pro -r -spec macx-clang CONFIG+=x86_64" +
+        " && qmake ../V2-Application/qt.pro -r -spec macx-clang CONFIG+=x86_64" +
         " && make -j" + str(cpus) +
         " && make deployqt"):
             sys.exit("Make Failed...")
         os.system("cd " + builddir + " && make codesign SIGNING_IDENTITY=Application")
         if os.system("cd " + builddir + " && make dmg"):
             sys.exit("Make Failed...")
-        installer = glob.glob(os.path.join(builddir, "openmv-ide-*.dmg"))[0]
+        installer = glob.glob(os.path.join(builddir, "openmv-swd-*.dmg"))[0]
 
     else:
         if os.system("cd " + builddir +
-        " && qmake ../qt-creator/qtcreator.pro -r -spec linux-g++" +
+        " && qmake ../V2-Application/qt.pro -r -spec linux-g++" +
         " && make -r -w -j" + str(cpus) +
         " && make installer INSTALL_ROOT="+installdir + " IFW_PATH="+ifdir):
             sys.exit("Make Failed...")
-        installer = glob.glob(os.path.join(builddir, "openmv-ide-*.run"))[0]
+        installer = glob.glob(os.path.join(builddir, "openmv-swd-*.run"))[0]
 
     ###########################################################################
 

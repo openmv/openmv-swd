@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<Installer>
+    <Name>OpenMV SWD</Name>
+    <Version>{version}</Version>
+    <Title>OpenMV SWD {display_version}</Title>
+    <Publisher>OpenMV, LLC</Publisher>
+    <ProductUrl>https://openmv.io</ProductUrl>
+
+    <MaintenanceToolName>OpenMVSWDUninstaller</MaintenanceToolName>
+    <TargetDir>@homeDir@/openmvswd</TargetDir>
+    <AdminTargetDir>/opt/openmvswd</AdminTargetDir>
+    <ControlScript>controlscript.qs</ControlScript>
+</Installer>
