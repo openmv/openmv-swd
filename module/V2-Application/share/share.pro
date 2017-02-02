@@ -10,7 +10,13 @@ DATA_DIRS = \
     firmware
 win32: DATA_DIRS += drivers proploader-windows
 macx: DATA_DIRS += proploader-mac
-linux-*: DATA_DIRS += proploader-linux
+linux-* {
+    contains(QMAKE_TARGET.arch, x86_64) {
+        DATA_DIRS += proploader-linux-x86_64
+    } else {
+        DATA_DIRS += proploader-linux-x86
+    }
+}
 
 for(data_dir, DATA_DIRS) {
     files = $$files($$PWD/$$data_dir/*, true)

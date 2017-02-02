@@ -7,13 +7,17 @@ TARGET = $$EXE_APP_TARGET
 DESTDIR = $$EXE_APP_PATH
 VERSION = $$OPENMVSWD_VERSION
 QT -= testlib
+QT += concurrent gui-private serialport sql
 
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD
-SOURCES += main.cpp \
-    openmvswd.cpp
+SOURCES += \
+    main.cpp \
+    openmvswd.cpp \
+    openmvswdserialport.cpp
 HEADERS += \
-    openmvswd.h
+    openmvswd.h \
+    openmvswdserialport.h
 FORMS += \
     openmvswd.ui
 RESOURCES += \

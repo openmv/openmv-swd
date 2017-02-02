@@ -147,7 +147,7 @@ pub main | i, x, r
             command_state := 0
 
         $53_57_44_39: ' Ping
-          com.writeString(string("Hello World!", com#Carriage_Return, com#Line_Feed))
+          com.writeString(string("Hello World - v2.1.0", com#Carriage_Return, com#Line_Feed))
 
     repeat i from 0 to constant(NUM_SWD - 1)
       debounce_reset(i)
