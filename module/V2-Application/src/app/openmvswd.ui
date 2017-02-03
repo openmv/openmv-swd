@@ -529,14 +529,14 @@
        <widget class="QWidget" name="swd_19" native="true">
         <layout class="QVBoxLayout" name="verticalLayout_19">
          <item>
-          <widget class="QLabel" name="label_21">
+          <widget class="QLabel" name="label_19">
            <property name="text">
             <string>SWD 20</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QProgressBar" name="progressBar_21">
+          <widget class="QProgressBar" name="progressBar_19">
            <property name="value">
             <number>0</number>
            </property>

@@ -100,7 +100,7 @@ pub start(io_pin, clk_pin, reset_pin)
   swd_action := 0
 
   erase_timeout := clkfreq * 20
-  test_timeout := clkfreq * 20
+  test_timeout := clkfreq * 4
 
   outa[reset_pin] := 0
   dira[reset_pin] := 1
@@ -397,7 +397,14 @@ sub_init_ret  ret
 
 ' /////////// Sub Fini
 
-sub_fini      call #send_res
+sub_fini      ' wait for the test to finish
+
+              rdlong x, #0
+              shl x, #4
+              add x, cnt
+              waitcnt x, cnt
+
+              call #send_res
               call #send_seq
               call #send_res
               call #clk_pulse
@@ -653,13 +660,37 @@ send_req_tmp  andn dira, swdio_pin
 
 ' /////////// Sub Clock Pulse
 
-clk_pulse     ' nop
+clk_pulse     nop
+              nop
+              nop
+              nop
+              nop
+              nop
+              nop
               or outa, swdclk_pin
-              ' nop
+              nop
+              nop
+              nop
+              nop
+              nop
+              nop
+              nop
 clk_pulse_m   nop
-              ' nop
+              nop
+              nop
+              nop
+              nop
+              nop
+              nop
+              nop
               andn outa, swdclk_pin
-              ' nop
+              nop
+              nop
+              nop
+              nop
+              nop
+              nop
+              nop
 clk_pulse_ret ret
 
 ' /////////// Sub Fatal Error
@@ -680,11 +711,12 @@ block_addr    long 0
 erase_timeout long 0
 test_timeout  long 0
 
+w_cnt         res 1
+r_cnt         res 1
+
 a             res 1
 b             res 1
 c             res 1
-w_cnt         res 1
-r_cnt         res 1
 
 i             res 1
 x             res 1

@@ -41,17 +41,19 @@ static bool removeRecursively(const QString &filePath)
 
     if(fileInfo.isDir())
     {
-        if(QDir(filePath).isRoot())
+        QDir dir = QDir(filePath).canonicalPath();
+
+        if(dir.isRoot())
         {
             return false;
         }
 
-        if(QDir(filePath).canonicalPath() == QDir::home().canonicalPath())
+        if(dir.path() == QDir::home().canonicalPath())
         {
             return false;
         }
 
-        foreach(const QString &fileName, QDir(filePath).entryList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot))
+        foreach(const QString &fileName, dir.entryList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot))
         {
             if(!removeRecursively(filePath + QLatin1Char('/') + fileName))
             {
@@ -59,7 +61,7 @@ static bool removeRecursively(const QString &filePath)
             }
         }
 
-        if(!QDir().rmpath(filePath))
+        if(!QDir::root().rmdir(dir.path()))
         {
             return false;
         }
@@ -79,9 +81,18 @@ static bool copyRecursively(const QString &srcFilePath, const QString &tgtFilePa
 {
     if(QFileInfo(srcFilePath).isDir())
     {
-        if(!QFileInfo::exists(tgtFilePath))
+        QFileInfo tgtFileInfo = QFileInfo(tgtFilePath);
+
+        if(!tgtFileInfo.exists())
         {
-            if(!QDir().mkpath(tgtFilePath))
+            QDir targetDir = QDir(tgtFilePath);
+
+            if(!targetDir.cdUp())
+            {
+                return false;
+            }
+
+            if(!targetDir.mkdir(tgtFileInfo.fileName()))
             {
                 return false;
             }
@@ -97,14 +108,6 @@ static bool copyRecursively(const QString &srcFilePath, const QString &tgtFilePa
     }
     else
     {
-        if(QFile::exists(tgtFilePath))
-        {
-            if(!QFile::remove(tgtFilePath))
-            {
-                return false;
-            }
-        }
-
         if(!QFile::copy(srcFilePath, tgtFilePath))
         {
             return false;
@@ -150,11 +153,11 @@ QString OpenMVSWD::userResourcePath()
 {
     QString path = QFileInfo(m_settings->fileName()).path() + QStringLiteral("/openmvswd");
 
-    if(!QFileInfo::exists(path))
+    if(!QFileInfo::exists(path + QLatin1Char('/')))
     {
         if(!QDir().mkpath(path))
         {
-            return path;
+            return QFileInfo(m_settings->fileName()).path();
         }
     }
 
@@ -639,10 +642,16 @@ bool OpenMVSWD::programSDCard2(bool noMessage)
                 bool ok = true;
                 QStringList list = QDir(userResourcePath() + QStringLiteral("/firmware")).entryList(QDir::Dirs | QDir::NoDotAndDotDot);
 
+                QApplication::setOverrideCursor(Qt::WaitCursor);
+                QApplication::processEvents();
+
                 foreach(const QString &dir, list)
                 {
-                    if(!copyRecursively(userResourcePath() + QStringLiteral("/firmware/") + dir, drive + QLatin1Char('/') + dir))
+                    if(!removeRecursively(drive + QLatin1Char('/') + dir))
                     {
+                        QApplication::restoreOverrideCursor();
+                        QApplication::processEvents();
+
                         QMessageBox::critical(this,
                             tr("Program SD Card"),
                             tr("Please close any programs that are viewing/editing the SD card!"));
@@ -654,6 +663,28 @@ bool OpenMVSWD::programSDCard2(bool noMessage)
 
                 if(ok)
                 {
+                    foreach(const QString &dir, list)
+                    {
+                        if(!copyRecursively(userResourcePath() + QStringLiteral("/firmware/") + dir, drive + QLatin1Char('/') + dir))
+                        {
+                            QApplication::restoreOverrideCursor();
+                            QApplication::processEvents();
+
+                            QMessageBox::critical(this,
+                                tr("Program SD Card"),
+                                tr("Please close any programs that are viewing/editing the SD card!"));
+
+                            ok = false;
+                            break;
+                        }
+                    }
+                }
+
+                if(ok)
+                {
+                    QApplication::restoreOverrideCursor();
+                    QApplication::processEvents();
+
                     QMessageBox::information(this,
                         tr("Program SD Card"),
                         tr("SD card update complete!"));
@@ -759,6 +790,46 @@ void OpenMVSWD::programOpenMVCams()
         m_ui->programSDCardButton->setEnabled(false);
         m_ui->aboutButton->setEnabled(false);
         m_ui->programButton->setEnabled(false);
+        m_ui->label_00->setText(tr("SWD 1"));
+        m_ui->progressBar_00->setValue(0);
+        m_ui->label_01->setText(tr("SWD 2"));
+        m_ui->progressBar_01->setValue(0);
+        m_ui->label_02->setText(tr("SWD 3"));
+        m_ui->progressBar_02->setValue(0);
+        m_ui->label_03->setText(tr("SWD 4"));
+        m_ui->progressBar_03->setValue(0);
+        m_ui->label_04->setText(tr("SWD 5"));
+        m_ui->progressBar_04->setValue(0);
+        m_ui->label_05->setText(tr("SWD 6"));
+        m_ui->progressBar_05->setValue(0);
+        m_ui->label_06->setText(tr("SWD 7"));
+        m_ui->progressBar_06->setValue(0);
+        m_ui->label_07->setText(tr("SWD 8"));
+        m_ui->progressBar_07->setValue(0);
+        m_ui->label_08->setText(tr("SWD 9"));
+        m_ui->progressBar_08->setValue(0);
+        m_ui->label_09->setText(tr("SWD 10"));
+        m_ui->progressBar_09->setValue(0);
+        m_ui->label_10->setText(tr("SWD 11"));
+        m_ui->progressBar_10->setValue(0);
+        m_ui->label_11->setText(tr("SWD 12"));
+        m_ui->progressBar_11->setValue(0);
+        m_ui->label_12->setText(tr("SWD 13"));
+        m_ui->progressBar_12->setValue(0);
+        m_ui->label_13->setText(tr("SWD 14"));
+        m_ui->progressBar_13->setValue(0);
+        m_ui->label_14->setText(tr("SWD 15"));
+        m_ui->progressBar_14->setValue(0);
+        m_ui->label_15->setText(tr("SWD 16"));
+        m_ui->progressBar_15->setValue(0);
+        m_ui->label_16->setText(tr("SWD 17"));
+        m_ui->progressBar_16->setValue(0);
+        m_ui->label_17->setText(tr("SWD 18"));
+        m_ui->progressBar_17->setValue(0);
+        m_ui->label_18->setText(tr("SWD 19"));
+        m_ui->progressBar_18->setValue(0);
+        m_ui->label_19->setText(tr("SWD 20"));
+        m_ui->progressBar_19->setValue(0);
 
         OpenMVSWDSerialPort port;
 
@@ -820,16 +891,9 @@ void OpenMVSWD::programOpenMVCams()
 
                 if(isLinuxHost() && errorMessage2.contains(QStringLiteral("Permission Denied"), Qt::CaseInsensitive))
                 {
-                    QString name = QString::fromLatin1(qgetenv("USER"));
-
-                    if(name.isEmpty())
-                    {
-                        name = QString::fromLatin1(qgetenv("USERNAME"));
-                    }
-
                     QMessageBox::information(this,
                         tr("Program"),
-                        tr("Try doing:\n\nsudo adduser %L1 dialout\n\n...in a terminal and then restart your computer.").arg(name));
+                        tr("Try doing:\n\nsudo adduser %L1 dialout\n\n...in a terminal and then restart your computer.").arg(isWindowsHost() ? QString::fromLatin1(qgetenv("USERNAME")) : QString::fromLatin1(qgetenv("USER"))));
                 }
 
                 PROGRAM_END();
@@ -953,41 +1017,48 @@ void OpenMVSWD::programOpenMVCams()
             }
         }
 
+        QList< QPair<QString, QString> > uniqueIDs;
+
         for(int i = 0; i < MAX_ROW; i++)
         {
-//            // Activate Row ///////////////////////////////////////////////////
-//            {
-//                bool ok2 = false;
-//                bool *ok2Ptr = &ok2;
+            // Activate Row ///////////////////////////////////////////////////
+            {
+                bool ok2 = false;
+                bool *ok2Ptr = &ok2;
 
-//                QMetaObject::Connection conn = connect(&port, &OpenMVSWDSerialPort::activateRowResult,
-//                    this, [this, ok2Ptr] (const QString &text) {
-//                    *ok2Ptr = !text.isEmpty();
-//                });
+                QMetaObject::Connection conn = connect(&port, &OpenMVSWDSerialPort::activateRowResult,
+                    this, [this, ok2Ptr] (const QString &text) {
+                    *ok2Ptr = !text.isEmpty();
+                });
 
-//                QEventLoop loop;
+                QEventLoop loop;
 
-//                connect(&port, &OpenMVSWDSerialPort::activateRowResult,
-//                        &loop, &QEventLoop::quit);
+                connect(&port, &OpenMVSWDSerialPort::activateRowResult,
+                        &loop, &QEventLoop::quit);
 
-//                port.activateRow(i);
+                port.activateRow(i);
 
-//                loop.exec();
+                loop.exec();
 
-//                disconnect(conn);
+                disconnect(conn);
 
-//                if(!ok2)
-//                {
-//                    QMessageBox::critical(this,
-//                        tr("Program"),
-//                        tr("Unable to activate row %L1!").arg(i));
+                if(!ok2)
+                {
+                    QMessageBox::critical(this,
+                        tr("Program"),
+                        tr("Unable to activate row %L1!").arg(i));
 
-//                    CLOSE_PROGRAM_END();
-//                }
-//            }
+                    CLOSE_PROGRAM_END();
+                }
+            }
+
+            int tries = 3;
+            int state[MAX_COL];
 
             for(int j = 0; j < MAX_COL; j++)
             {
+                state[j] = tries;
+
                 // Start Programming //////////////////////////////////////////
                 {
                     bool ok2 = false;
@@ -1020,39 +1091,294 @@ void OpenMVSWD::programOpenMVCams()
                 }
             }
 
+            forever
+            {
+                QString text2;
+                QString *text2Ptr = &text2;
 
+                QMetaObject::Connection conn = connect(&port, &OpenMVSWDSerialPort::getLineResult,
+                    this, [this, text2Ptr] (const QString &text) {
+                    *text2Ptr = text;
+                });
 
-//            // Deactivate Row /////////////////////////////////////////////////
-//            {
-//                bool ok2 = false;
-//                bool *ok2Ptr = &ok2;
+                QEventLoop loop;
 
-//                QMetaObject::Connection conn = connect(&port, &OpenMVSWDSerialPort::activateRowResult,
-//                    this, [this, ok2Ptr] (const QString &text) {
-//                    *ok2Ptr = !text.isEmpty();
-//                });
+                connect(&port, &OpenMVSWDSerialPort::getLineResult,
+                        &loop, &QEventLoop::quit);
 
-//                QEventLoop loop;
+                port.getLine();
 
-//                connect(&port, &OpenMVSWDSerialPort::activateRowResult,
-//                        &loop, &QEventLoop::quit);
+                loop.exec();
 
-//                port.activateRow(i);
+                disconnect(conn);
 
-//                loop.exec();
+                if(text2.isEmpty())
+                {
+                    QMessageBox::critical(this,
+                        tr("Program"),
+                        tr("Jig Timeout!"));
 
-//                disconnect(conn);
+                    CLOSE_PROGRAM_END();
+                }
 
-//                if(!ok2)
-//                {
-//                    QMessageBox::critical(this,
-//                        tr("Program"),
-//                        tr("Unable to deactivate row %L1!").arg(i));
+                // Parse Text /////////////////////////////////////////////////
+                {
+                    QRegularExpressionMatch match = QRegularExpression(QStringLiteral("SWD(\\d+)\\s+\\[(.+?)\\]\\s+(\\d+)%\r\n")).match(text2);
+                    int index = match.captured(1).toInt();
+                    int swd = (i * MAX_COL) + index;
+                    QString text = match.captured(2);
+                    int percent = match.captured(3).toInt();
 
-//                    CLOSE_PROGRAM_END();
-//                }
-//            }
+                    if(text.startsWith(QStringLiteral("Not Ready")))
+                    {
+                        state[index] = 0;
+                        text = QStringLiteral("<font color='red'>SWD %L1 Not Ready</font>").arg(swd);
+                    }
+                    else if(text.startsWith(QStringLiteral("Done")))
+                    {
+                        state[index] = 0;
+                        QRegularExpressionMatch match2 = QRegularExpression(QStringLiteral("Done (.+?):(.+?)")).match(text);
+                        uniqueIDs.append(QPair<QString, QString>(match2.captured(1), match2.captured(2)));
+                        text = QStringLiteral("<font color='green'>SWD %L1 Done</font>").arg(swd);
+                    }
+                    else if(text.startsWith(QStringLiteral("Error")))
+                    {
+                        state[index] -= 1;
+                        text = QStringLiteral("<font color='red'>SWD %L1 Error</font>").arg(swd);
+                    }
+                    else
+                    {
+                        text.prepend(QStringLiteral("SWD %L1 ").arg(swd));
+                    }
+
+                    switch(swd)
+                    {
+                        case 0:
+                        {
+                            m_ui->label_00->setText(text);
+                            m_ui->progressBar_00->setValue(percent);
+                            break;
+                        }
+                        case 1:
+                        {
+                            m_ui->label_01->setText(text);
+                            m_ui->progressBar_01->setValue(percent);
+                            break;
+                        }
+                        case 2:
+                        {
+                            m_ui->label_02->setText(text);
+                            m_ui->progressBar_02->setValue(percent);
+                            break;
+                        }
+                        case 3: {
+                            m_ui->label_03->setText(text);
+                            m_ui->progressBar_03->setValue(percent);
+                            break;
+                        }
+                        case 4:
+                        {
+                            m_ui->label_04->setText(text);
+                            m_ui->progressBar_04->setValue(percent);
+                            break;
+                        }
+                        case 5:
+                        {
+                            m_ui->label_05->setText(text);
+                            m_ui->progressBar_05->setValue(percent);
+                            break;
+                        }
+                        case 6: {
+                            m_ui->label_06->setText(text);
+                            m_ui->progressBar_06->setValue(percent);
+                            break;
+                        }
+                        case 7:
+                        {
+                            m_ui->label_07->setText(text);
+                            m_ui->progressBar_07->setValue(percent);
+                            break;
+                        }
+                        case 8: {
+                            m_ui->label_08->setText(text);
+                            m_ui->progressBar_08->setValue(percent);
+                            break;
+                        }
+                        case 9:
+                        {
+                            m_ui->label_09->setText(text);
+                            m_ui->progressBar_09->setValue(percent);
+                            break;
+                        }
+                        case 10:
+                        {
+                            m_ui->label_10->setText(text);
+                            m_ui->progressBar_10->setValue(percent);
+                            break;
+                        }
+                        case 11:
+                        {
+                            m_ui->label_11->setText(text);
+                            m_ui->progressBar_11->setValue(percent);
+                            break;
+                        }
+                        case 12:
+                        {
+                            m_ui->label_12->setText(text);
+                            m_ui->progressBar_12->setValue(percent);
+                            break;
+                        }
+                        case 13:
+                        {
+                            m_ui->label_13->setText(text);
+                            m_ui->progressBar_13->setValue(percent);
+                            break;
+                        }
+                        case 14:
+                        {
+                            m_ui->label_14->setText(text);
+                            m_ui->progressBar_14->setValue(percent);
+                            break;
+                        }
+                        case 15:
+                        {
+                            m_ui->label_15->setText(text);
+                            m_ui->progressBar_15->setValue(percent);
+                            break;
+                        }
+                        case 16:
+                        {
+                            m_ui->label_16->setText(text);
+                            m_ui->progressBar_16->setValue(percent);
+                            break;
+                        }
+                        case 17:
+                        {
+                            m_ui->label_17->setText(text);
+                            m_ui->progressBar_17->setValue(percent);
+                            break;
+                        }
+                        case 18:
+                        {
+                            m_ui->label_18->setText(text);
+                            m_ui->progressBar_18->setValue(percent);
+                            break;
+                        }
+                        case 19:
+                        {
+                            m_ui->label_19->setText(text);
+                            m_ui->progressBar_19->setValue(percent);
+                            break;
+                        }
+                        default:
+                        {
+                            break;
+                        }
+                    }
+                }
+
+                bool quit = true;
+
+                for(int j = 0; j < MAX_COL; j++)
+                {
+                    quit &= state[j] != tries;
+                }
+
+                if(quit)
+                {
+                    QApplication::setOverrideCursor(Qt::WaitCursor);
+
+                    QEventLoop loop;
+                    QTimer::singleShot(5000, &loop, &QEventLoop::quit);
+                    loop.exec();
+
+                    QApplication::restoreOverrideCursor();
+
+                    bool retry = false;
+
+                    for(int j = 0; j < MAX_COL; j++)
+                    {
+                        if(state[j])
+                        {
+                            retry = true;
+
+                            // Start Reprogramming ////////////////////////////
+                            {
+                                bool ok2 = false;
+                                bool *ok2Ptr = &ok2;
+
+                                QMetaObject::Connection conn = connect(&port, &OpenMVSWDSerialPort::startProgrammingResult,
+                                    this, [this, ok2Ptr] (bool ok) {
+                                    *ok2Ptr = ok;
+                                });
+
+                                QEventLoop loop;
+
+                                connect(&port, &OpenMVSWDSerialPort::startProgrammingResult,
+                                        &loop, &QEventLoop::quit);
+
+                                port.startProgramming(j);
+
+                                loop.exec();
+
+                                disconnect(conn);
+
+                                if(!ok2)
+                                {
+                                    QMessageBox::critical(this,
+                                        tr("Program"),
+                                        tr("Unable to start programming on swd %L1!").arg((i * MAX_COL) + j + 1));
+
+                                    CLOSE_PROGRAM_END();
+                                }
+                            }
+                        }
+                    }
+
+                    if(!retry)
+                    {
+                        break;
+                    }
+
+                    tries -= 1;
+                }
+            }
+
+            // Deactivate Row /////////////////////////////////////////////////
+            {
+                bool ok2 = false;
+                bool *ok2Ptr = &ok2;
+
+                QMetaObject::Connection conn = connect(&port, &OpenMVSWDSerialPort::activateRowResult,
+                    this, [this, ok2Ptr] (const QString &text) {
+                    *ok2Ptr = !text.isEmpty();
+                });
+
+                QEventLoop loop;
+
+                connect(&port, &OpenMVSWDSerialPort::activateRowResult,
+                        &loop, &QEventLoop::quit);
+
+                port.activateRow(i);
+
+                loop.exec();
+
+                disconnect(conn);
+
+                if(!ok2)
+                {
+                    QMessageBox::critical(this,
+                        tr("Program"),
+                        tr("Unable to deactivate row %L1!").arg(i));
+
+                    CLOSE_PROGRAM_END();
+                }
+            }
         }
+
+        QMessageBox::information(this,
+            tr("Program"),
+            tr("Firmware programming complete!"));
 
         CLOSE_PROGRAM_END();
     }

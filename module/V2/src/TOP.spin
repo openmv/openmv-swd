@@ -28,12 +28,12 @@ var
 
 dat
 
-  swd_io_pin byte 5, 8, 11, 14, 17
-  swd_clk_pin byte 4, 7, 10, 13, 16
-  swd_res_pin byte 6, 9, 12, 15, 18
+  swd_io_pin byte 5, 8, 11, 14, 2'17
+  swd_clk_pin byte 4, 7, 10, 13, 1'16
+  swd_res_pin byte 6, 9, 12, 15, 3'18
 
-  swd_sel_pin byte 3, 2, 1, 0
-  swd_pwr_pin byte 19, 20, 21, 22
+  swd_sel_pin byte 0, 0, 0, 0'3, 2, 1, 0
+  swd_pwr_pin byte 0, 0, 0, 0'19, 20, 21, 22
 
   m4_firmware_file_name byte "OPENMV2/OPENMV.BIN", 0 ' 8.3 file name
   m7_firmware_file_name byte "OPENMV3/OPENMV.BIN", 0 ' 8.3 file name
@@ -76,78 +76,80 @@ pub main | i, x, r
           if debounce_reset(0)
             x := constant(0 + 1)
           else
-            com.writeString(string("SWD0 Not Ready", com#Carriage_Return, com#Line_Feed))
+            com.writeString(string("SWD0 [Not Ready] 0%", com#Carriage_Return, com#Line_Feed))
+          quit
 
         $53_57_44_31: ' Program SWD 1
           if debounce_reset(1)
             x := constant(1 + 1)
           else
-            com.writeString(string("SWD1 Not Ready", com#Carriage_Return, com#Line_Feed))
+            com.writeString(string("SWD1 [Not Ready] 0%", com#Carriage_Return, com#Line_Feed))
+          quit
 
         $53_57_44_32: ' Program SWD 2
           if debounce_reset(2)
             x := constant(2 + 1)
           else
-            com.writeString(string("SWD2 Not Ready", com#Carriage_Return, com#Line_Feed))
+            com.writeString(string("SWD2 [Not Ready] 0%", com#Carriage_Return, com#Line_Feed))
+          quit
 
         $53_57_44_33: ' Program SWD 3
           if debounce_reset(3)
             x := constant(3 + 1)
           else
-            com.writeString(string("SWD3 Not Ready", com#Carriage_Return, com#Line_Feed))
+            com.writeString(string("SWD3 [Not Ready] 0%", com#Carriage_Return, com#Line_Feed))
+          quit
 
         $53_57_44_34: ' Program SWD 4
           if debounce_reset(4)
             x := constant(4 + 1)
           else
-            com.writeString(string("SWD4 Not Ready", com#Carriage_Return, com#Line_Feed))
+            com.writeString(string("SWD4 [Not Ready] 0%", com#Carriage_Return, com#Line_Feed))
+          quit
 
         $53_57_44_35: ' Activate row 0
           kill_port
-          if command_state <> constant(0 + 1)
+          if command_state~ <> constant(0 + 1)
             command_state := constant(0 + 1)
             dira[swd_sel_pin[0]] := 1
             dira[swd_pwr_pin[0]] := 1
             waitcnt(clkfreq + cnt)
             com.writeString(string("ROW0 On", com#Carriage_Return, com#Line_Feed))
-          else
-            command_state := 0
+          quit
 
         $53_57_44_36: ' Activate row 1
           kill_port
-          if command_state <> constant(1 + 1)
+          if command_state~ <> constant(1 + 1)
             command_state := constant(1 + 1)
             dira[swd_sel_pin[1]] := 1
             dira[swd_pwr_pin[1]] := 1
             waitcnt(clkfreq + cnt)
             com.writeString(string("ROW1 On", com#Carriage_Return, com#Line_Feed))
-          else
-            command_state := 0
+          quit
 
         $53_57_44_37: ' Activate row 2
           kill_port
-          if command_state <> constant(2 + 1)
+          if command_state~ <> constant(2 + 1)
             command_state := constant(2 + 1)
             dira[swd_sel_pin[2]] := 1
             dira[swd_pwr_pin[2]] := 1
             waitcnt(clkfreq + cnt)
             com.writeString(string("ROW2 On", com#Carriage_Return, com#Line_Feed))
-          else
-            command_state := 0
+          quit
 
         $53_57_44_38: ' Activate row 3
           kill_port
-          if command_state <> constant(3 + 1)
+          if command_state~ <> constant(3 + 1)
             command_state := constant(3 + 1)
             dira[swd_sel_pin[3]] := 1
             dira[swd_pwr_pin[3]] := 1
             waitcnt(clkfreq + cnt)
             com.writeString(string("ROW3 On", com#Carriage_Return, com#Line_Feed))
-          else
-            command_state := 0
+          quit
 
         $53_57_44_39: ' Ping
           com.writeString(string("Hello World - v2.1.0", com#Carriage_Return, com#Line_Feed))
+          quit
 
     repeat i from 0 to constant(NUM_SWD - 1)
       debounce_reset(i)
@@ -203,7 +205,7 @@ pri kill_port | x
     com.writeString(DECOut(x))
     com.writeString(string(" Off", com#Carriage_Return, com#Line_Feed))
 
-pri heart_beat
+pri heart_beat | i
 
   if (cnt - hb_cnt) > (clkfreq / 10)
     hb_cnt := cnt ' don't care if we loose ticks
@@ -211,6 +213,16 @@ pri heart_beat
     case hb_state
       1, 2, 4, 5:
         !outa[HEART_BEAT_LED]
+      7:
+        repeat i from 0 to constant(NUM_SWD - 1)
+          if board_state[i] == SWD_BEGIN_PROGRAMMING
+            com.writeString(string("SWD"))
+            com.writeString(DECOut(i))
+            com.writeString(string(" [Erasing] 0%", com#Carriage_Return, com#Line_Feed))
+          if board_state[i] == SWD_FINISHED
+            com.writeString(string("SWD"))
+            com.writeString(DECOut(i))
+            com.writeString(string(" [Testing] 0%", com#Carriage_Return, com#Line_Feed))
 
     if ++hb_state == 10
       hb_state := 0
@@ -236,7 +248,7 @@ pri begin_initing(port) ' may abort... returns 0 normally - non-zero on abort
 
   com.writeString(string("SWD"))
   com.writeString(DECOut(port))
-  com.writeString(string(" Erasing...", com#Carriage_Return, com#Line_Feed))
+  com.writeString(string(" [Erasing] 0%", com#Carriage_Return, com#Line_Feed))
 
   board_state[port] := SWD_BEGIN_PROGRAMMING
 
@@ -259,7 +271,7 @@ pri begin_programming(port) ' may abort... returns 0 normally - non-zero on abor
 
       com.writeString(string("SWD"))
       com.writeString(DECOut(port))
-      com.writeString(string(" Programing 0%", com#Carriage_Return, com#Line_Feed))
+      com.writeString(string(" [Programing] 0%", com#Carriage_Return, com#Line_Feed))
 
       board_state[port] := SWD_PROGRAMMING
 
@@ -274,7 +286,7 @@ pri programming(port) | x ' may abort... returns 0 normally - non-zero on abort
 
     com.writeString(string("SWD"))
     com.writeString(DECOut(port))
-    com.writeString(string(" Programing "))
+    com.writeString(string(" [Programing] "))
     com.writeString(DECOut(((x - remaining_blocks[port]) * 100) / x))
     com.writeString(string("%", com#Carriage_Return, com#Line_Feed))
 
@@ -293,7 +305,7 @@ pri programming(port) | x ' may abort... returns 0 normally - non-zero on abort
 
         com.writeString(string("SWD"))
         com.writeString(DECOut(port))
-        com.writeString(string(" Verifying 0%", com#Carriage_Return, com#Line_Feed))
+        com.writeString(string(" [Verifying] 0%", com#Carriage_Return, com#Line_Feed))
 
         board_state[port] := SWD_VERIFYING
 
@@ -318,7 +330,7 @@ pri verifying(port) | x ' may abort... returns 0 normally - non-zero on abort
 
     com.writeString(string("SWD"))
     com.writeString(DECOut(port))
-    com.writeString(string(" Verifying "))
+    com.writeString(string(" [Verifying] "))
     com.writeString(DECOut(((x - remaining_blocks[port]) * 100) / x))
     com.writeString(string("%", com#Carriage_Return, com#Line_Feed))
 
@@ -331,7 +343,7 @@ pri verifying(port) | x ' may abort... returns 0 normally - non-zero on abort
 
       com.writeString(string("SWD"))
       com.writeString(DECOut(port))
-      com.writeString(string(" Testing...", com#Carriage_Return, com#Line_Feed))
+      com.writeString(string(" [Testing] 0%", com#Carriage_Return, com#Line_Feed))
 
       board_state[port] := SWD_FINISHED
 
@@ -355,7 +367,7 @@ pri finished(port) ' may abort... returns 0 normally - non-zero on abort
 
     com.writeString(string("SWD"))
     com.writeString(DECOut(port))
-    com.writeString(string(" Done - "))
+    com.writeString(string(" [Done "))
     case swd[port].get_device
       swd#M4_TARGET_ID_CODE_1:
         com.writeString(string("M4"))
@@ -365,7 +377,7 @@ pri finished(port) ' may abort... returns 0 normally - non-zero on abort
     com.writeString(HEXOut(long[swd[port].get_id][2]))
     com.writeString(HEXOut(long[swd[port].get_id][1]))
     com.writeString(HEXOut(long[swd[port].get_id][0]))
-    com.writeString(string(com#Carriage_Return, com#Line_Feed))
+    com.writeString(string("] 100%", com#Carriage_Return, com#Line_Feed))
 
     board_state[port] := SWD_IDLE
 
@@ -373,7 +385,7 @@ pri fatal_error(port)
 
   com.writeString(string("SWD"))
   com.writeString(DECOut(port))
-  com.writeString(string(" Error", com#Carriage_Return, com#Line_Feed))
+  com.writeString(string(" [Error] 0%", com#Carriage_Return, com#Line_Feed))
 
   board_state[port] := SWD_IDLE
 

@@ -5,7 +5,7 @@ The Serial Wire Debugger (SWD) Programmer can load firmware on up to five STM32F
 
 If you're interested in practical code demonstrating how to load the firmware on an ST32F427/STM32F765 microcontroller, or generally, any ST Cortex-M4/Cortex-M7 device checkout the [SWD Code](http://github.com/openmv/openmv-swd/blob/master/module/V2/src/SWD.spin).
 
-# To build the OpenMV SWD application:
+# openmv-swd application
 
 * Install 7-Zip and add it to PATH.
 * Install Python 2.7 and add it to PATH.
