@@ -341,7 +341,7 @@ OpenMVSWD::OpenMVSWD(QWidget *parent) : QDialog(parent), m_ui(new Ui::OpenMVSWD)
     ///////////////////////////////////////////////////////////////////////////
 
     bool ok;
-    QString key = QInputDialog::getText(splashScreen,
+    QString form_key = QInputDialog::getText(splashScreen,
         QString(), tr("Please enter a valid form key (provided by OpenMV)"),
         QLineEdit::Normal, m_settings->value(QStringLiteral(LAST_FORM_KEY)).toString(), &ok,
         Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
@@ -354,7 +354,7 @@ OpenMVSWD::OpenMVSWD(QWidget *parent) : QDialog(parent), m_ui(new Ui::OpenMVSWD)
 
         connect(&manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
 
-        QNetworkRequest request = QNetworkRequest(QUrl(QString(QStringLiteral("http://upload.openmv.io/openmv-swd-ids.php?board=NULL&id=NULL&key=%L1")).arg(key)));
+        QNetworkRequest request = QNetworkRequest(QUrl(QString(QStringLiteral("http://upload.openmv.io/openmv-swd-ids-insert.php?board=NULL&id=NULL&form_key=%L1")).arg(form_key)));
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
         request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
 #endif
@@ -372,7 +372,7 @@ OpenMVSWD::OpenMVSWD(QWidget *parent) : QDialog(parent), m_ui(new Ui::OpenMVSWD)
             {
                 if(QString::fromLatin1(data).contains(QStringLiteral("Done")))
                 {
-                    m_settings->setValue(QStringLiteral(LAST_FORM_KEY), key);
+                    m_settings->setValue(QStringLiteral(LAST_FORM_KEY), form_key);
                 }
                 else
                 {
@@ -1466,7 +1466,7 @@ void OpenMVSWD::programOpenMVCams()
 
             connect(&manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
 
-            QNetworkRequest request = QNetworkRequest(QUrl(QString(QStringLiteral("http://upload.openmv.io/openmv-swd-ids.php?board=%L1&id=%L2&key=%L3")).arg(board_id.first).arg(board_id.second).arg(m_settings->value(QStringLiteral(LAST_FORM_KEY)).toString())));
+            QNetworkRequest request = QNetworkRequest(QUrl(QString(QStringLiteral("http://upload.openmv.io/openmv-swd-ids-insert.php?board=%L1&id=%L2&form_key=%L3")).arg(board_id.first).arg(board_id.second).arg(m_settings->value(QStringLiteral(LAST_FORM_KEY)).toString())));
 #if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
             request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
 #endif
