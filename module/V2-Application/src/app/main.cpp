@@ -91,9 +91,9 @@ int main(int argc, char **argv)
     // Make sure we honor the system's proxy settings
     QNetworkProxyFactory::setUseSystemConfiguration(true);
 
-    OpenMVSWD w;
-    app.setActivationWindow(&w);
+    OpenMVSWD *w = new OpenMVSWD();
+    app.setActivationWindow(w);
 
-    w.show();
+    QTimer::singleShot(1, w, [w] {w->show();});
     return app.exec();
 }

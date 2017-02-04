@@ -7,7 +7,6 @@
 #include <QtGui/private/qzipreader_p.h>
 #include <QtNetwork>
 #include <QtSerialPort>
-#include <QtSql>
 #include <QtWidgets>
 
 #include "app_version.h"
@@ -16,6 +15,7 @@
 #define ICON_PATH ":/openmv-media/icons/openmv-icon/openmv.png"
 #define SPLASH_PATH ":/openmv-media/splash/openmv-splash-slate/splash-small.png"
 
+#define LAST_FORM_KEY "LastFormKey"
 #define LAST_PROGRAM_SD_CARD "LastProgramSDCard"
 #define LAST_SERIAL_PORT "LastSerialPort"
 #define RESOURCES_MAJOR "ResourcesMajor"

@@ -7,7 +7,7 @@ TARGET = $$EXE_APP_TARGET
 DESTDIR = $$EXE_APP_PATH
 VERSION = $$OPENMVSWD_VERSION
 QT -= testlib
-QT += concurrent gui-private serialport sql
+QT += concurrent gui-private serialport
 
 INCLUDEPATH += $$PWD
 DEPENDPATH += $$PWD

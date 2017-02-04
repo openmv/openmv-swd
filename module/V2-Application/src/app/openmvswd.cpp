@@ -182,7 +182,8 @@ OpenMVSWD::OpenMVSWD(QWidget *parent) : QDialog(parent), m_ui(new Ui::OpenMVSWD)
     QApplication::setOrganizationDomain(QStringLiteral("openmv.io"));
     QApplication::setWindowIcon(QIcon(QStringLiteral(ICON_PATH)));
 
-    ///////////////////////////////////////////////////////////////////////////
+    setWindowFlags(Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
+                   (isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
 
     m_settings = new QSettings(QSettings::IniFormat, QSettings::UserScope, QStringLiteral("OpenMV"), QStringLiteral("OpenMVSWD"), this);
     m_ui->setupUi(this);
@@ -221,11 +222,11 @@ OpenMVSWD::OpenMVSWD(QWidget *parent) : QDialog(parent), m_ui(new Ui::OpenMVSWD)
 
         if(!removeRecursively(userResourcePath()))
         {
-            QMessageBox::critical(this,
+            QMessageBox::critical(splashScreen,
                 QString(),
                 tr("Please close any programs that are viewing/editing OpenMV SWD's application data and then restart OpenMV SWD!"));
 
-            QApplication::quit();
+            QTimer::singleShot(0, this, [this] {QApplication::quit();});
             ok = false;
         }
         else
@@ -236,11 +237,11 @@ OpenMVSWD::OpenMVSWD(QWidget *parent) : QDialog(parent), m_ui(new Ui::OpenMVSWD)
             {
                 if(!copyRecursively(resourcePath() + QLatin1Char('/') + dir, userResourcePath() + QLatin1Char('/') + dir))
                 {
-                    QMessageBox::critical(this,
+                    QMessageBox::critical(splashScreen,
                         QString(),
                         tr("Please close any programs that are viewing/editing OpenMV SWD's application data and then restart OpenMV SWD!"));
 
-                    QApplication::quit();
+                    QTimer::singleShot(0, this, [this] {QApplication::quit();});
                     ok = false;
                     break;
                 }
@@ -253,6 +254,10 @@ OpenMVSWD::OpenMVSWD(QWidget *parent) : QDialog(parent), m_ui(new Ui::OpenMVSWD)
             m_settings->setValue(QStringLiteral(RESOURCES_MINOR), OMV_SWD_VERSION_MINOR);
             m_settings->setValue(QStringLiteral(RESOURCES_PATCH), OMV_SWD_VERSION_RELEASE);
             m_settings->sync();
+        }
+        else
+        {
+            return;
         }
     }
 
@@ -295,8 +300,8 @@ OpenMVSWD::OpenMVSWD(QWidget *parent) : QDialog(parent), m_ui(new Ui::OpenMVSWD)
                         if(!QDesktopServices::openUrl(url))
                         {
                             QMessageBox::critical(this,
-                                                  QString(),
-                                                  tr("Failed to open: \"%L1\"").arg(url.toString()));
+                                QString(),
+                                tr("Failed to open: \"%L1\"").arg(url.toString()));
                         }
                     }
                     else
@@ -335,10 +340,85 @@ OpenMVSWD::OpenMVSWD(QWidget *parent) : QDialog(parent), m_ui(new Ui::OpenMVSWD)
 
     ///////////////////////////////////////////////////////////////////////////
 
-    ///////////////////////////////////////////////////////////////////////////
+    bool ok;
+    QString key = QInputDialog::getText(splashScreen,
+        QString(), tr("Please enter a valid form key (provided by OpenMV)"),
+        QLineEdit::Normal, m_settings->value(QStringLiteral(LAST_FORM_KEY)).toString(), &ok,
+        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+        (isMacHost() ? Qt::WindowType() : Qt::WindowCloseButtonHint));
 
-    setWindowFlags(Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::CustomizeWindowHint |
-                   (isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+    if(ok)
+    {
+        QNetworkAccessManager manager(this);
+        QEventLoop loop;
+
+        connect(&manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
+
+        QNetworkRequest request = QNetworkRequest(QUrl(QString(QStringLiteral("http://upload.openmv.io/openmv-swd-ids.php?board=NULL&id=NULL&key=%L1")).arg(key)));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+        request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
+#endif
+        QNetworkReply *reply = manager.get(request);
+
+        if(reply)
+        {
+            connect(reply, &QNetworkReply::sslErrors, reply, static_cast<void (QNetworkReply::*)(void)>(&QNetworkReply::ignoreSslErrors));
+
+            loop.exec();
+
+            QByteArray data = reply->readAll();
+
+            if((reply->error() == QNetworkReply::NoError) && (!data.isEmpty()))
+            {
+                if(QString::fromLatin1(data).contains(QStringLiteral("Done")))
+                {
+                    m_settings->setValue(QStringLiteral(LAST_FORM_KEY), key);
+                }
+                else
+                {
+                    QMessageBox::critical(splashScreen,
+                        QString(),
+                        tr("Invalid form key!"));
+
+                    QTimer::singleShot(0, this, [this] {QApplication::quit();});
+                }
+            }
+            else if(reply->error() != QNetworkReply::NoError)
+            {
+                QMessageBox::critical(splashScreen,
+                    QString(),
+                    tr("Error: %L1!").arg(reply->error()));
+
+                QTimer::singleShot(0, this, [this] {QApplication::quit();});
+            }
+            else
+            {
+                QMessageBox::critical(splashScreen,
+                    QString(),
+                    tr("GET Network error!"));
+
+                QTimer::singleShot(0, this, [this] {QApplication::quit();});
+            }
+
+            reply->deleteLater();
+        }
+        else
+        {
+            QMessageBox::critical(splashScreen,
+                QString(),
+                tr("GET network error!"));
+
+            QTimer::singleShot(0, this, [this] {QApplication::quit();});
+        }
+    }
+    else
+    {
+        QMessageBox::critical(splashScreen,
+            QString(),
+            tr("A valid form key is required for OpenMV SWD to run."));
+
+        QTimer::singleShot(0, this, [this] {QApplication::quit();});
+    }
 }
 
 OpenMVSWD::~OpenMVSWD()
@@ -1017,7 +1097,8 @@ void OpenMVSWD::programOpenMVCams()
             }
         }
 
-        QList< QPair<QString, QString> > uniqueIDs;
+        typedef QPair<QString, QString> board_id_t;
+        QList<board_id_t> board_ids;
 
         for(int i = 0; i < MAX_ROW; i++)
         {
@@ -1053,7 +1134,7 @@ void OpenMVSWD::programOpenMVCams()
             }
 
             int tries = 3;
-            int state[MAX_COL];
+            int state[MAX_COL] = {};
 
             for(int j = 0; j < MAX_COL; j++)
             {
@@ -1137,8 +1218,8 @@ void OpenMVSWD::programOpenMVCams()
                     else if(text.startsWith(QStringLiteral("Done")))
                     {
                         state[index] = 0;
-                        QRegularExpressionMatch match2 = QRegularExpression(QStringLiteral("Done (.+?):(.+?)")).match(text);
-                        uniqueIDs.append(QPair<QString, QString>(match2.captured(1), match2.captured(2)));
+                        QRegularExpressionMatch match2 = QRegularExpression(QStringLiteral("Done (.+?):(.+)")).match(text);
+                        board_ids.append(board_id_t(match2.captured(1), match2.captured(2)));
                         text = QStringLiteral("<font color='green'>SWD %L1 Done</font>").arg(swd);
                     }
                     else if(text.startsWith(QStringLiteral("Error")))
@@ -1373,6 +1454,69 @@ void OpenMVSWD::programOpenMVCams()
 
                     CLOSE_PROGRAM_END();
                 }
+            }
+        }
+
+        // Upload Results /////////////////////////////////////////////////////
+
+        foreach(board_id_t board_id, board_ids)
+        {
+            QNetworkAccessManager manager(this);
+            QEventLoop loop;
+
+            connect(&manager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
+
+            QNetworkRequest request = QNetworkRequest(QUrl(QString(QStringLiteral("http://upload.openmv.io/openmv-swd-ids.php?board=%L1&id=%L2&key=%L3")).arg(board_id.first).arg(board_id.second).arg(m_settings->value(QStringLiteral(LAST_FORM_KEY)).toString())));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 6, 0)
+            request.setAttribute(QNetworkRequest::FollowRedirectsAttribute, true);
+#endif
+            QNetworkReply *reply = manager.get(request);
+
+            if(reply)
+            {
+                connect(reply, &QNetworkReply::sslErrors, reply, static_cast<void (QNetworkReply::*)(void)>(&QNetworkReply::ignoreSslErrors));
+
+                loop.exec();
+
+                QByteArray data = reply->readAll();
+
+                QTimer::singleShot(0, reply, &QNetworkReply::deleteLater);
+
+                if((reply->error() == QNetworkReply::NoError) && (!data.isEmpty()))
+                {
+                    if(!QString::fromLatin1(data).contains(QStringLiteral("Done")))
+                    {
+                        QMessageBox::critical(this,
+                            tr("Program"),
+                            tr("Data Base Error!\n\nPlease re-program!"));
+
+                        CLOSE_PROGRAM_END();
+                    }
+                }
+                else if(reply->error() != QNetworkReply::NoError)
+                {
+                    QMessageBox::critical(this,
+                        tr("Program"),
+                        tr("Error: %L1!\n\nPlease re-program!").arg(reply->error()));
+
+                    CLOSE_PROGRAM_END();
+                }
+                else
+                {
+                    QMessageBox::critical(this,
+                        tr("Program"),
+                        tr("GET Network error!\n\nPlease re-program!"));
+
+                    CLOSE_PROGRAM_END();
+                }
+            }
+            else
+            {
+                QMessageBox::critical(this,
+                    tr("Program"),
+                    tr("GET network error!\n\nPlease re-program!"));
+
+                CLOSE_PROGRAM_END();
             }
         }
 
