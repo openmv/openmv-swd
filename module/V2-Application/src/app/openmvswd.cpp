@@ -912,7 +912,6 @@ void OpenMVSWD::programOpenMVCams()
         m_ui->progressBar_19->setValue(0);
 
         OpenMVSWDSerialPort port;
-
         int major2 = int();
         int minor2 = int();
         int patch2 = int();
@@ -1520,9 +1519,16 @@ void OpenMVSWD::programOpenMVCams()
             }
         }
 
-        QMessageBox::information(this,
-            tr("Program"),
-            tr("Firmware programming complete!"));
+        QTimer timer;
+        connect(&timer, &QTimer::timeout, this, [this] {QApplication::beep();});
+        timer.start(10000);
+
+        QMessageBox box(QMessageBox::Information, tr("Program"), tr("Firmware programming complete!"), QMessageBox::Ok, this,
+            Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+            (isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
+        box.setDefaultButton(QMessageBox::Ok);
+        box.setEscapeButton(QMessageBox::Cancel);
+        box.exec();
 
         CLOSE_PROGRAM_END();
     }
