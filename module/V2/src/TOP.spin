@@ -8,12 +8,12 @@ con
   NUM_SWD = 5
   NUM_SEL = 4
 
-  HEART_BEAT_LED = 26'23
+  HEART_BEAT_LED = 23
 
-  SD_DO_PIN = 22'24
-  SD_CLK_PIN = 23'25
-  SD_DI_PIN = 24'26
-  SD_CS_PIN = 25'27
+  SD_DO_PIN = 24
+  SD_CLK_PIN = 25
+  SD_DI_PIN = 26
+  SD_CS_PIN = 27
   SD_WP_PIN = -1
   SD_CD_PIN = -1
 
@@ -28,12 +28,12 @@ var
 
 dat
 
-  swd_io_pin byte 5, 8, 11, 14, 2'17
-  swd_clk_pin byte 4, 7, 10, 13, 1'16
-  swd_res_pin byte 6, 9, 12, 15, 3'18
+  swd_io_pin byte 5, 8, 11, 14, 17
+  swd_clk_pin byte 4, 7, 10, 13, 16
+  swd_res_pin byte 6, 9, 12, 15, 18
 
-  swd_sel_pin byte 0, 0, 0, 0'3, 2, 1, 0
-  swd_pwr_pin byte 0, 0, 0, 0'19, 20, 21, 22
+  swd_sel_pin byte 3, 2, 1, 0
+  swd_pwr_pin byte 19, 20, 21, 22
 
   m4_firmware_file_name byte "OPENMV2/OPENMV.BIN", 0 ' 8.3 file name
   m7_firmware_file_name byte "OPENMV3/OPENMV.BIN", 0 ' 8.3 file name
