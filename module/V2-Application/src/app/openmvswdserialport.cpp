@@ -112,7 +112,7 @@ QString OpenMVSWDSerialPort_private::read()
 
         if(response.endsWith('\n'))
         {
-            return QString::fromLatin1(response);
+            return QString::fromUtf8(response);
         }
         else
         {

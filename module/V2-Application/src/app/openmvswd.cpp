@@ -275,7 +275,7 @@ OpenMVSWD::OpenMVSWD(QWidget *parent) : QDialog(parent), m_ui(new Ui::OpenMVSWD)
 
             if((reply->error() == QNetworkReply::NoError) && (!data.isEmpty()))
             {
-                QRegularExpressionMatch match = QRegularExpression(QStringLiteral("(\\d+)\\.(\\d+)\\.(\\d+)")).match(QString::fromLatin1(data));
+                QRegularExpressionMatch match = QRegularExpression(QStringLiteral("(\\d+)\\.(\\d+)\\.(\\d+)")).match(QString::fromUtf8(data));
 
                 int major = match.captured(1).toInt();
                 int minor = match.captured(2).toInt();
@@ -370,7 +370,7 @@ OpenMVSWD::OpenMVSWD(QWidget *parent) : QDialog(parent), m_ui(new Ui::OpenMVSWD)
 
             if((reply->error() == QNetworkReply::NoError) && (!data.isEmpty()))
             {
-                if(QString::fromLatin1(data).contains(QStringLiteral("Done")))
+                if(QString::fromUtf8(data).contains(QStringLiteral("Done")))
                 {
                     m_settings->setValue(QStringLiteral(LAST_FORM_KEY), form_key);
                 }
@@ -437,7 +437,7 @@ void OpenMVSWD::packageUpdate()
 
         if((reply->error() == QNetworkReply::NoError) && (!data.isEmpty()))
         {
-            QRegularExpressionMatch match = QRegularExpression(QStringLiteral("(\\d+)\\.(\\d+)\\.(\\d+)")).match(QString::fromLatin1(data));
+            QRegularExpressionMatch match = QRegularExpression(QStringLiteral("(\\d+)\\.(\\d+)\\.(\\d+)")).match(QString::fromUtf8(data));
 
             int new_major = match.captured(1).toInt();
             int new_minor = match.captured(2).toInt();
@@ -645,7 +645,7 @@ bool OpenMVSWD::programJig2(bool noMessage)
                 QMessageBox box(QMessageBox::Critical, tr("Program Jig"), tr("Firmware update failed!"), QMessageBox::Ok, this,
                     Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
                     (isMacHost() ? Qt::WindowType(0) : Qt::WindowCloseButtonHint));
-                box.setDetailedText(QString::fromLatin1(process.readAllStandardOutput()));
+                box.setDetailedText(QString::fromUtf8(process.readAllStandardOutput()));
                 box.setDefaultButton(QMessageBox::Ok);
                 box.setEscapeButton(QMessageBox::Cancel);
                 box.exec();
@@ -678,7 +678,7 @@ bool OpenMVSWD::programSDCard2(bool noMessage)
                 && info.isReady()
                 && (!info.isRoot())
                 && (!info.isReadOnly())
-                && (QString::fromLatin1(info.fileSystemType()).contains(QStringLiteral("fat"), Qt::CaseInsensitive) || QString::fromLatin1(info.fileSystemType()).contains(QStringLiteral("msdos"), Qt::CaseInsensitive))
+                && (QString::fromUtf8(info.fileSystemType()).contains(QStringLiteral("fat"), Qt::CaseInsensitive) || QString::fromUtf8(info.fileSystemType()).contains(QStringLiteral("msdos"), Qt::CaseInsensitive))
                 && ((!isMacHost()) || info.rootPath().startsWith(QStringLiteral("/volumes/"), Qt::CaseInsensitive))
                 && ((!isLinuxHost()) || info.rootPath().startsWith(QStringLiteral("/media/"), Qt::CaseInsensitive) || info.rootPath().startsWith(QStringLiteral("/mnt/"), Qt::CaseInsensitive) || info.rootPath().startsWith(QStringLiteral("/run/"), Qt::CaseInsensitive)))
                 {
@@ -972,7 +972,7 @@ void OpenMVSWD::programOpenMVCams()
                 {
                     QMessageBox::information(this,
                         tr("Program"),
-                        tr("Try doing:\n\nsudo adduser %L1 dialout\n\n...in a terminal and then restart your computer.").arg(isWindowsHost() ? QString::fromLatin1(qgetenv("USERNAME")) : QString::fromLatin1(qgetenv("USER"))));
+                        tr("Try doing:\n\nsudo adduser %L1 dialout\n\n...in a terminal and then restart your computer.").arg(isWindowsHost() ? QString::fromUtf8(qgetenv("USERNAME")) : QString::fromUtf8(qgetenv("USER"))));
                 }
 
                 PROGRAM_END();
@@ -1039,7 +1039,7 @@ void OpenMVSWD::programOpenMVCams()
                 {
                     file.close();
 
-                    QRegularExpressionMatch match = QRegularExpression(QStringLiteral("(\\d+)\\.(\\d+)\\.(\\d+)")).match(QString::fromLatin1(data));
+                    QRegularExpressionMatch match = QRegularExpression(QStringLiteral("(\\d+)\\.(\\d+)\\.(\\d+)")).match(QString::fromUtf8(data));
 
                     if((major2 < match.captured(1).toInt())
                     || ((major2 == match.captured(1).toInt()) && (minor2 < match.captured(2).toInt()))
@@ -1483,7 +1483,7 @@ void OpenMVSWD::programOpenMVCams()
 
                 if((reply->error() == QNetworkReply::NoError) && (!data.isEmpty()))
                 {
-                    if(!QString::fromLatin1(data).contains(QStringLiteral("Done")))
+                    if(!QString::fromUtf8(data).contains(QStringLiteral("Done")))
                     {
                         QMessageBox::critical(this,
                             tr("Program"),
