@@ -623,7 +623,7 @@ bool OpenMVSWD::programJig2(bool noMessage)
             QEventLoop loop;
             connect(&process, static_cast<void(QProcess::*)(int)>(&QProcess::finished), &loop, &QEventLoop::quit);
 
-            process.start(command, QStringList()
+            process.start(command, QStringList() << QStringLiteral("-D reset=rts")
                 << QStringLiteral("-s")
                 << QStringLiteral("-r")
                 << QStringLiteral("-e")
