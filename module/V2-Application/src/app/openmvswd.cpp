@@ -623,10 +623,12 @@ bool OpenMVSWD::programJig2(bool noMessage)
             QEventLoop loop;
             connect(&process, static_cast<void(QProcess::*)(int)>(&QProcess::finished), &loop, &QEventLoop::quit);
 
-            process.start(command, QStringList() << QStringLiteral("-D reset=rts")
+            process.start(command, QStringList()
                 << QStringLiteral("-s")
                 << QStringLiteral("-r")
                 << QStringLiteral("-e")
+                << QStringLiteral("-D")
+                << QStringLiteral("reset=rts")
                 << QDir::cleanPath(QDir::toNativeSeparators(userResourcePath() + QStringLiteral("/firmware/firmware.bin"))));
 
             timer.start(60000); // 1 minute
