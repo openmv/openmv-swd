@@ -2,7 +2,7 @@
 
 con
 
-  _CLKFREQ = 80_000_000
+  _CLKFREQ = 96_000_000
   _CLKMODE = XTAL1 + PLL16X
 
   NUM_SWD = 5
@@ -148,7 +148,7 @@ pub main | i, x, r
           quit
 
         $53_57_44_39: ' Ping
-          com.writeString(string("Hello World - v2.1.0", com#Carriage_Return, com#Line_Feed))
+          com.writeString(string("Hello World - v2.2.0", com#Carriage_Return, com#Line_Feed))
           quit
 
     repeat i from 0 to constant(NUM_SWD - 1)

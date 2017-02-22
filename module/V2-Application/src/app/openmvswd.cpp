@@ -1103,6 +1103,13 @@ void OpenMVSWD::programOpenMVCams()
         {
             // Activate Row ///////////////////////////////////////////////////
             {
+                // 5 Second Delay //
+                {
+                    QEventLoop m_loop;
+                    QTimer::singleShot(5000, &m_loop, &QEventLoop::quit);
+                    m_loop.exec();
+                }
+
                 bool ok2 = false;
                 bool *ok2Ptr = &ok2;
 
@@ -1129,6 +1136,13 @@ void OpenMVSWD::programOpenMVCams()
                         tr("Unable to activate row %L1!").arg(i));
 
                     CLOSE_PROGRAM_END();
+                }
+
+                // 5 Second Delay //
+                {
+                    QEventLoop m_loop;
+                    QTimer::singleShot(5000, &m_loop, &QEventLoop::quit);
+                    m_loop.exec();
                 }
             }
 
@@ -1426,6 +1440,13 @@ void OpenMVSWD::programOpenMVCams()
 
             // Deactivate Row /////////////////////////////////////////////////
             {
+                // 5 Second Delay //
+                {
+                    QEventLoop m_loop;
+                    QTimer::singleShot(5000, &m_loop, &QEventLoop::quit);
+                    m_loop.exec();
+                }
+
                 bool ok2 = false;
                 bool *ok2Ptr = &ok2;
 
@@ -1452,6 +1473,13 @@ void OpenMVSWD::programOpenMVCams()
                         tr("Unable to deactivate row %L1!").arg(i));
 
                     CLOSE_PROGRAM_END();
+                }
+
+                // 5 Second Delay //
+                {
+                    QEventLoop m_loop;
+                    QTimer::singleShot(5000, &m_loop, &QEventLoop::quit);
+                    m_loop.exec();
                 }
             }
         }
