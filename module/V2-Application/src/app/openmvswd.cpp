@@ -786,6 +786,7 @@ do { \
     m_ui->programSDCardButton->setEnabled(true); \
     m_ui->aboutButton->setEnabled(true); \
     m_ui->programButton->setEnabled(true); \
+    m_ui->programButton->setText(tr("Program OpenMV Cams")); \
     return; \
 } while(0)
 
@@ -805,6 +806,7 @@ do { \
     m_ui->programSDCardButton->setEnabled(true); \
     m_ui->aboutButton->setEnabled(true); \
     m_ui->programButton->setEnabled(true); \
+    m_ui->programButton->setText(tr("Program OpenMV Cams")); \
     return; \
 } while(0)
 
@@ -1098,6 +1100,36 @@ void OpenMVSWD::programOpenMVCams()
             }
         }
 
+        QTimer busy_timer;
+        busy_timer.start(500);
+
+        connect(&busy_timer, &QTimer::timeout, this, [this] {
+            if(m_ui->programButton->text() == tr("Working"))
+            {
+                m_ui->programButton->setText(tr("Working."));
+            }
+            else if(m_ui->programButton->text() == tr("Working."))
+            {
+                m_ui->programButton->setText(tr("Working.."));
+            }
+            else if(m_ui->programButton->text() == tr("Working.."))
+            {
+                m_ui->programButton->setText(tr("Working..."));
+            }
+            else if(m_ui->programButton->text() == tr("Working..."))
+            {
+                m_ui->programButton->setText(tr("Working...."));
+            }
+            else if(m_ui->programButton->text() == tr("Working...."))
+            {
+                m_ui->programButton->setText(tr("Working....."));
+            }
+            else if((m_ui->programButton->text() == tr("Working.....")) || (m_ui->programButton->text() == tr("Program OpenMV Cams")))
+            {
+                m_ui->programButton->setText(tr("Working"));
+            }
+        });
+
         typedef QPair<QString, QString> board_id_t;
         QList<board_id_t> board_ids;
 
@@ -1105,6 +1137,9 @@ void OpenMVSWD::programOpenMVCams()
         {
             // Activate Row ///////////////////////////////////////////////////
             {
+                QApplication::setOverrideCursor(Qt::WaitCursor);
+                QApplication::processEvents();
+
                 // 5 Second Delay //
                 {
                     QEventLoop m_loop;
@@ -1133,6 +1168,9 @@ void OpenMVSWD::programOpenMVCams()
 
                 if(!ok2)
                 {
+                    QApplication::restoreOverrideCursor();
+                    QApplication::processEvents();
+
                     QMessageBox::critical(this,
                         tr("Program"),
                         tr("Unable to activate row %L1!").arg(i));
@@ -1146,6 +1184,9 @@ void OpenMVSWD::programOpenMVCams()
                     QTimer::singleShot(5000, &m_loop, &QEventLoop::quit);
                     m_loop.exec();
                 }
+
+                QApplication::restoreOverrideCursor();
+                QApplication::processEvents();
             }
 
             int tries = 3;
@@ -1442,6 +1483,9 @@ void OpenMVSWD::programOpenMVCams()
 
             // Deactivate Row /////////////////////////////////////////////////
             {
+                QApplication::setOverrideCursor(Qt::WaitCursor);
+                QApplication::processEvents();
+
                 // 5 Second Delay //
                 {
                     QEventLoop m_loop;
@@ -1470,6 +1514,9 @@ void OpenMVSWD::programOpenMVCams()
 
                 if(!ok2)
                 {
+                    QApplication::restoreOverrideCursor();
+                    QApplication::processEvents();
+
                     QMessageBox::critical(this,
                         tr("Program"),
                         tr("Unable to deactivate row %L1!").arg(i));
@@ -1483,6 +1530,9 @@ void OpenMVSWD::programOpenMVCams()
                     QTimer::singleShot(5000, &m_loop, &QEventLoop::quit);
                     m_loop.exec();
                 }
+
+                QApplication::restoreOverrideCursor();
+                QApplication::processEvents();
             }
         }
 

@@ -50,19 +50,19 @@ con
 
 var
 
-  long board_state[NUM_SWD], remaining_blocks[NUM_SWD], debounce_cnt[NUM_SWD], debounce_shift[NUM_SWD], debounce_state[NUM_SWD]
+  long board_state[NUM_SWD], remaining_blocks[NUM_SWD], debounce_cnt[NUM_SWD], debounce_shift[NUM_SWD], debounce_state[NUM_SWD], null
 
 pub main | i, x, r
-
-  dira[HEART_BEAT_LED] := 1
-  repeat i from 0 to constant(NUM_SEL - 1)
-    outa[swd_sel_pin[i]] := 1
 
   com.COMEngineStart(RX_PIN, TX_PIN, BAUD_RATE)
   fat.FATEngineStart(SD_DO_PIN, SD_CLK_PIN, SD_DI_PIN, SD_CS_PIN, SD_WP_PIN, SD_CD_PIN, -1, -1, -1)
 
   hb_cnt := cnt
+  dira[HEART_BEAT_LED] := 1
   repeat i from 0 to constant(NUM_SWD - 1)
+    outa[swd_pwr_pin[i]] := 1
+    dira[swd_pwr_pin[i]] := 1
+    dira[swd_sel_pin[i]] := 1
     debounce_cnt[i] := cnt
 
   repeat
@@ -111,9 +111,9 @@ pub main | i, x, r
           kill_port
           if command_state~ <> constant(0 + 1)
             command_state := constant(0 + 1)
-            dira[swd_sel_pin[0]] := 1
-            dira[swd_pwr_pin[0]] := 1
-            waitcnt(clkfreq + cnt)
+            outa[swd_sel_pin[0]] := 1
+            outa[swd_pwr_pin[0]] := 0
+            waitcnt((clkfreq >> 1) + cnt)
             com.writeString(string("ROW0 On", com#Carriage_Return, com#Line_Feed))
           quit
 
@@ -121,9 +121,9 @@ pub main | i, x, r
           kill_port
           if command_state~ <> constant(1 + 1)
             command_state := constant(1 + 1)
-            dira[swd_sel_pin[1]] := 1
-            dira[swd_pwr_pin[1]] := 1
-            waitcnt(clkfreq + cnt)
+            outa[swd_sel_pin[1]] := 1
+            outa[swd_pwr_pin[1]] := 0
+            waitcnt((clkfreq >> 1) + cnt)
             com.writeString(string("ROW1 On", com#Carriage_Return, com#Line_Feed))
           quit
 
@@ -131,9 +131,9 @@ pub main | i, x, r
           kill_port
           if command_state~ <> constant(2 + 1)
             command_state := constant(2 + 1)
-            dira[swd_sel_pin[2]] := 1
-            dira[swd_pwr_pin[2]] := 1
-            waitcnt(clkfreq + cnt)
+            outa[swd_sel_pin[2]] := 1
+            outa[swd_pwr_pin[2]] := 0
+            waitcnt((clkfreq >> 1) + cnt)
             com.writeString(string("ROW2 On", com#Carriage_Return, com#Line_Feed))
           quit
 
@@ -141,9 +141,9 @@ pub main | i, x, r
           kill_port
           if command_state~ <> constant(3 + 1)
             command_state := constant(3 + 1)
-            dira[swd_sel_pin[3]] := 1
-            dira[swd_pwr_pin[3]] := 1
-            waitcnt(clkfreq + cnt)
+            outa[swd_sel_pin[3]] := 1
+            outa[swd_pwr_pin[3]] := 0
+            waitcnt((clkfreq >> 1) + cnt)
             com.writeString(string("ROW3 On", com#Carriage_Return, com#Line_Feed))
           quit
 
@@ -198,9 +198,9 @@ pri kill_port | x
 
   if command_state
     x := command_state - 1
-    dira[swd_sel_pin[x]] := 0
-    dira[swd_pwr_pin[x]] := 0
-    waitcnt(clkfreq + cnt)
+    outa[swd_sel_pin[x]] := 0
+    outa[swd_pwr_pin[x]] := 1
+    waitcnt((clkfreq >> 1) + cnt)
     com.writeString(string("ROW"))
     com.writeString(DECOut(x))
     com.writeString(string(" Off", com#Carriage_Return, com#Line_Feed))
@@ -213,19 +213,19 @@ pri heart_beat | i
     case hb_state
       1, 2, 4, 5:
         !outa[HEART_BEAT_LED]
-      7:
-        repeat i from 0 to constant(NUM_SWD - 1)
-          if board_state[i] == SWD_BEGIN_PROGRAMMING
-            com.writeString(string("SWD"))
-            com.writeString(DECOut(i))
-            com.writeString(string(" [Erasing] 0%", com#Carriage_Return, com#Line_Feed))
-          if board_state[i] == SWD_FINISHED
-            com.writeString(string("SWD"))
-            com.writeString(DECOut(i))
-            com.writeString(string(" [Testing] 0%", com#Carriage_Return, com#Line_Feed))
 
     if ++hb_state == 10
       hb_state := 0
+
+      repeat i from 0 to constant(NUM_SWD - 1)
+        if board_state[i] == SWD_BEGIN_PROGRAMMING
+          com.writeString(string("SWD"))
+          com.writeString(DECOut(i))
+          com.writeString(string(" [Erasing] 0%", com#Carriage_Return, com#Line_Feed))
+        if board_state[i] == SWD_FINISHED
+          com.writeString(string("SWD"))
+          com.writeString(DECOut(i))
+          com.writeString(string(" [Testing] 0%", com#Carriage_Return, com#Line_Feed))
 
 pri debounce_reset(port)
 
