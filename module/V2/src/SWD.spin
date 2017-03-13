@@ -74,15 +74,10 @@ pub read_block
 
   swd_action := "R"
 
-pub fini(reset_pin)
+pub fini
 
   if swd_action == "E"
     abort 1
-
-  outa[reset_pin] := 0
-  dira[reset_pin] := 1
-  waitcnt((clkfreq / 1000) + cnt)
-  dira[reset_pin] := 0
 
   swd_action := "F"
 
@@ -97,27 +92,19 @@ pub start(io_pin, clk_pin, reset_pin)
 
   swdio_pin := |<io_pin
   swdclk_pin := |<clk_pin
+  swdrst_pin := |<reset_pin
   swd_action := 0
 
   erase_timeout := clkfreq * 20
-  test_timeout := clkfreq * 4
-
-  outa[reset_pin] := 0
-  dira[reset_pin] := 1
-  waitcnt((clkfreq / 1000) + cnt)
-  dira[reset_pin] := 0
+  test_timeout := clkfreq * 20
 
   cog_id := cognew(@cog_addr, @swd_action) + 1
 
-pub stop(reset_pin)
+pub stop
 
   if cog_id
-    cogstop(cog_id~ -1)
-
-    outa[reset_pin] := 0
-    dira[reset_pin] := 1
-    waitcnt((clkfreq / 1000) + cnt)
-    dira[reset_pin] := 0
+    cogstop(cog_id - 1)
+    cog_id := 0
 
 dat
 
@@ -133,8 +120,10 @@ cog_addr      mov action_addr, par
               mov block_addr,  par
               add block_addr,  #20
 
+              or outa, swdrst_pin
               or dira, swdio_pin
               or dira, swdclk_pin
+              or dira, swdrst_pin
 
 ' /////////// Main
 
@@ -245,7 +234,16 @@ D512          long 512
 
 ' /////////// Sub Init
 
-sub_init      call #send_res
+sub_init      mov fatal_error, #0 ' disable fatal error
+
+              andn outa, swdrst_pin
+              rdlong x, #0
+              shr x, #10
+              add x, cnt
+              waitcnt x, #0
+              or outa, swdrst_pin
+
+              call #send_res
               call #send_seq
               call #send_res
               call #clk_pulse
@@ -393,16 +391,20 @@ if_z          mov a, m7_id_addr
               mov x, #0
               wrlong x, action_addr
 
+              mov fatal_error, fatal_error_t ' enable fatal error
+
 sub_init_ret  ret
 
 ' /////////// Sub Fini
 
 sub_fini      ' wait for the test to finish
 
+              andn outa, swdrst_pin
               rdlong x, #0
-              shl x, #4
+              shr x, #10
               add x, cnt
-              waitcnt x, cnt
+              waitcnt x, #0
+              or outa, swdrst_pin
 
               call #send_res
               call #send_seq
@@ -479,6 +481,11 @@ sub_fini_l    mov x, cnt
               sub x, r_cnt
               cmp x, test_timeout wc
 if_nc         jmp #fatal_error
+
+              rdlong x, #0
+              shr x, #1
+              add x, cnt
+              waitcnt x, #0
 
               cmp c, m4_id_code1 wz
 if_z          mov a, m4_test_addr
@@ -660,48 +667,45 @@ send_req_tmp  andn dira, swdio_pin
 
 ' /////////// Sub Clock Pulse
 
-clk_pulse     nop
-              nop
-              nop
-              nop
-              nop
-              nop
-              nop
+clk_pulse     mov cnt, clk_pulse_cfg
+              djnz cnt, #$
+
               or outa, swdclk_pin
-              nop
-              nop
-              nop
-              nop
-              nop
-              nop
-              nop
+
+              mov cnt, clk_pulse_cfg
+              djnz cnt, #$
+
 clk_pulse_m   nop
-              nop
-              nop
-              nop
-              nop
-              nop
-              nop
-              nop
+
+              mov cnt, clk_pulse_cfg
+              djnz cnt, #$
+
               andn outa, swdclk_pin
-              nop
-              nop
-              nop
-              nop
-              nop
-              nop
-              nop
+
+              mov cnt, clk_pulse_cfg
+              djnz cnt, #$
+
 clk_pulse_ret ret
+
+clk_pulse_cfg long 1
 
 ' /////////// Sub Fatal Error
 
-fatal_error   mov x, #"E"
+fatal_error   jmp #fatal_error_2
+              add clk_pulse_cfg, #1
+              cmp clk_pulse_cfg, #6 wc
+if_c          jmp #sub_init
+
+fatal_error_2 mov x, #"E"
               wrlong x, action_addr
               cogid x
               cogstop x
 
+fatal_error_t jmp #fatal_error_2
+
 swdio_pin     long 0
 swdclk_pin    long 0
+swdrst_pin    long 0
 
 action_addr   long 0
 device_addr   long 0

@@ -58,12 +58,16 @@ pub main | i, x, r
   fat.FATEngineStart(SD_DO_PIN, SD_CLK_PIN, SD_DI_PIN, SD_CS_PIN, SD_WP_PIN, SD_CD_PIN, -1, -1, -1)
 
   hb_cnt := cnt
-  dira[HEART_BEAT_LED] := 1
+
   repeat i from 0 to constant(NUM_SWD - 1)
+    debounce_cnt[i] := cnt
+
+  dira[HEART_BEAT_LED] := 1
+
+  repeat i from 0 to constant(NUM_SEL - 1)
     outa[swd_pwr_pin[i]] := 1
     dira[swd_pwr_pin[i]] := 1
     dira[swd_sel_pin[i]] := 1
-    debounce_cnt[i] := cnt
 
   repeat
     x := 0
@@ -339,7 +343,7 @@ pri verifying(port) | x ' may abort... returns 0 normally - non-zero on abort
       swd[port].read_block
 
     else
-      swd[port].fini(swd_res_pin[port])
+      swd[port].fini
 
       com.writeString(string("SWD"))
       com.writeString(DECOut(port))
@@ -363,7 +367,7 @@ pri finished(port) ' may abort... returns 0 normally - non-zero on abort
   ifnot swd[port].busy
 
     fat[port].unmountPartition
-    swd[port].stop(swd_res_pin[port])
+    swd[port].stop
 
     com.writeString(string("SWD"))
     com.writeString(DECOut(port))

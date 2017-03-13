@@ -602,10 +602,12 @@ bool OpenMVSWD::programJig2(bool noMessage)
             connect(&timer, &QTimer::timeout, &process, &QProcess::kill);
 
             QString command;
+            QString propellent = QDir::cleanPath(QDir::toNativeSeparators(resourcePath() + QStringLiteral("/proploader-windows/Propellent.exe")));
+            bool propellentExists = QFile::exists(propellent);
 
             if(isWindowsHost())
             {
-                command = QDir::cleanPath(QDir::toNativeSeparators(resourcePath() + QStringLiteral("/proploader-windows/proploader.exe")));
+                command = propellentExists ? propellent : QDir::cleanPath(QDir::toNativeSeparators(resourcePath() + QStringLiteral("/proploader-windows/proploader.exe")));
             }
             else if(isMacHost())
             {
@@ -623,18 +625,34 @@ bool OpenMVSWD::programJig2(bool noMessage)
             QEventLoop loop;
             connect(&process, static_cast<void(QProcess::*)(int)>(&QProcess::finished), &loop, &QEventLoop::quit);
 
-            process.start(command, QStringList()
-                << QStringLiteral("-s")
-                << QStringLiteral("-r")
-                << QStringLiteral("-e")
-                << QStringLiteral("-D")
-                << QStringLiteral("reset=rts")
-                << QDir::cleanPath(QDir::toNativeSeparators(userResourcePath() + QStringLiteral("/firmware/firmware.bin"))));
+            if(propellentExists)
+            {
+                process.start(command, QStringList()
+                    << QStringLiteral("/GLOBAL")
+                    << QStringLiteral("/SIGNAL")
+                    << QStringLiteral("BOTH")
+                    << QStringLiteral("/GUI")
+                    << QStringLiteral("OFF")
+                    << QStringLiteral("/EEPROM")
+                    << QDir::cleanPath(QDir::toNativeSeparators(userResourcePath() + QStringLiteral("/firmware/TOP.binary"))));
+            }
+            else
+            {
+                process.start(command, QStringList()
+                    << QStringLiteral("-s")
+                    << QStringLiteral("-r")
+                    << QStringLiteral("-e")
+                    << QStringLiteral("-D")
+                    << QStringLiteral("reset=rts")
+                    << QStringLiteral("-D")
+                    << QStringLiteral("clkfreq=96000000")
+                    << QDir::cleanPath(QDir::toNativeSeparators(userResourcePath() + QStringLiteral("/firmware/TOP.binary"))));
+            }
 
             timer.start(60000); // 1 minute
             loop.exec();
 
-            if((process.exitStatus() == QProcess::NormalExit) && (!process.exitCode()))
+            if((process.exitStatus() == QProcess::NormalExit) && (propellentExists ? (process.exitCode() == 451) : (!process.exitCode())))
             {
                 QMessageBox::information(this,
                     tr("Program Jig"),
@@ -1140,13 +1158,6 @@ void OpenMVSWD::programOpenMVCams()
                 QApplication::setOverrideCursor(Qt::WaitCursor);
                 QApplication::processEvents();
 
-                // 5 Second Delay //
-                {
-                    QEventLoop m_loop;
-                    QTimer::singleShot(5000, &m_loop, &QEventLoop::quit);
-                    m_loop.exec();
-                }
-
                 bool ok2 = false;
                 bool *ok2Ptr = &ok2;
 
@@ -1176,13 +1187,6 @@ void OpenMVSWD::programOpenMVCams()
                         tr("Unable to activate row %L1!").arg(i));
 
                     CLOSE_PROGRAM_END();
-                }
-
-                // 5 Second Delay //
-                {
-                    QEventLoop m_loop;
-                    QTimer::singleShot(5000, &m_loop, &QEventLoop::quit);
-                    m_loop.exec();
                 }
 
                 QApplication::restoreOverrideCursor();
@@ -1426,7 +1430,7 @@ void OpenMVSWD::programOpenMVCams()
                     QApplication::setOverrideCursor(Qt::WaitCursor);
 
                     QEventLoop loop;
-                    QTimer::singleShot(5000, &loop, &QEventLoop::quit);
+                    QTimer::singleShot(1000, &loop, &QEventLoop::quit);
                     loop.exec();
 
                     QApplication::restoreOverrideCursor();
@@ -1486,13 +1490,6 @@ void OpenMVSWD::programOpenMVCams()
                 QApplication::setOverrideCursor(Qt::WaitCursor);
                 QApplication::processEvents();
 
-                // 5 Second Delay //
-                {
-                    QEventLoop m_loop;
-                    QTimer::singleShot(5000, &m_loop, &QEventLoop::quit);
-                    m_loop.exec();
-                }
-
                 bool ok2 = false;
                 bool *ok2Ptr = &ok2;
 
@@ -1522,13 +1519,6 @@ void OpenMVSWD::programOpenMVCams()
                         tr("Unable to deactivate row %L1!").arg(i));
 
                     CLOSE_PROGRAM_END();
-                }
-
-                // 5 Second Delay //
-                {
-                    QEventLoop m_loop;
-                    QTimer::singleShot(5000, &m_loop, &QEventLoop::quit);
-                    m_loop.exec();
                 }
 
                 QApplication::restoreOverrideCursor();
