@@ -37,6 +37,12 @@ con
   M4_FB_ADDRESS = $2000_0008
   M7_FB_ADDRESS = $2002_0008
 
+  M4_ERASE_TIMEOUT = 15
+  M7_ERASE_TIMEOUT = 10
+
+  M4_TEST_TIMEOUT = 15
+  M7_TEST_TIMEOUT = 10
+
 var
 
   long cog_id, swd_action, device_type, unique_id[3], data_block[128] ' Do Not Rearrange!
@@ -95,8 +101,10 @@ pub start(io_pin, clk_pin, reset_pin)
   swdrst_pin := |<reset_pin
   swd_action := 0
 
-  erase_timeout := clkfreq * 20
-  test_timeout := clkfreq * 20
+  m4_erase_time := clkfreq * M4_ERASE_TIMEOUT
+  m7_erase_time := clkfreq * M7_ERASE_TIMEOUT
+  m4_test_time := clkfreq * M4_TEST_TIMEOUT
+  m7_test_time := clkfreq * M7_TEST_TIMEOUT
 
   cog_id := cognew(@cog_addr, @swd_action) + 1
 
@@ -238,7 +246,7 @@ sub_init      mov fatal_error, #0 ' disable fatal error
 
               andn outa, swdrst_pin
               rdlong x, #0
-              shr x, #10
+              shr x, #2
               add x, cnt
               waitcnt x, #0
               or outa, swdrst_pin
@@ -349,7 +357,10 @@ if_nz         jmp #fatal_error
               mov w_cnt, cnt
 sub_init_l    mov x, cnt
               sub x, w_cnt
-              cmp x, erase_timeout wc
+              cmp c, m4_id_code1 wz
+if_z          cmp x, m4_erase_time wc
+              cmp c, m7_id_code1 wz
+if_z          cmp x, m7_erase_time wc
 if_nc         jmp #fatal_error
 
               mov a, flash_sts_a
@@ -401,7 +412,22 @@ sub_fini      ' wait for the test to finish
 
               andn outa, swdrst_pin
               rdlong x, #0
-              shr x, #10
+              shr x, #2
+              add x, cnt
+              waitcnt x, #0
+              or outa, swdrst_pin
+
+              rdlong c, device_addr
+              cmp c, m4_id_code1 wz
+if_z          mov x, m4_test_time
+              cmp c, m7_id_code1 wz
+if_z          mov x, m7_test_time
+              add x, cnt
+              waitcnt x, #0
+
+              andn outa, swdrst_pin
+              rdlong x, #0
+              shr x, #2
               add x, cnt
               waitcnt x, #0
               or outa, swdrst_pin
@@ -420,7 +446,6 @@ sub_fini      ' wait for the test to finish
               cmp y, m4_id_code1 wz
 if_nz         cmp y, m7_id_code1 wz
 if_nz         jmp #fatal_error
-              mov c, y ' backup
 
               ' power up req
 
@@ -474,18 +499,25 @@ if_nz         jmp #fatal_error
               mov y, csw_w
               call #send_req
 
-              ' wait till passed
+              ' halt processor
 
-              mov r_cnt, cnt
-sub_fini_l    mov x, cnt
-              sub x, r_cnt
-              cmp x, test_timeout wc
-if_nc         jmp #fatal_error
+              mov a, halt_1_a
+              mov b, halt_1_v
+              call #ahb_w
 
-              rdlong x, #0
-              shr x, #1
-              add x, cnt
-              waitcnt x, #0
+              mov a, halt_2_a
+              mov b, halt_2_v
+              call #ahb_w
+
+              mov a, halt_3_a
+              mov b, halt_3_v
+              call #ahb_w
+
+              mov a, halt_2_a
+              mov b, #0
+              call #ahb_w
+
+              '  test address
 
               cmp c, m4_id_code1 wz
 if_z          mov a, m4_test_addr
@@ -494,7 +526,7 @@ if_z          mov a, m7_test_addr
               call #ahb_r
 
               cmp b, deadbeef wz
-if_nz         jmp #sub_fini_l
+if_nz         jmp #fatal_error
 
               mov x, #0
               wrlong x, action_addr
@@ -712,8 +744,10 @@ device_addr   long 0
 id_addr       long 0
 block_addr    long 0
 
-erase_timeout long 0
-test_timeout  long 0
+m4_erase_time long 0
+m7_erase_time long 0
+m4_test_time  long 0
+m7_test_time  long 0
 
 w_cnt         res 1
 r_cnt         res 1
