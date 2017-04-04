@@ -117,7 +117,7 @@ pub main | i, x, r
             command_state := constant(0 + 1)
             outa[swd_sel_pin[0]] := 1
             outa[swd_pwr_pin[0]] := 0
-            waitcnt((clkfreq << 1) + cnt)
+            debounce_reset_wait
             com.writeString(string("ROW0 On", com#Carriage_Return, com#Line_Feed))
           quit
 
@@ -127,7 +127,7 @@ pub main | i, x, r
             command_state := constant(1 + 1)
             outa[swd_sel_pin[1]] := 1
             outa[swd_pwr_pin[1]] := 0
-            waitcnt((clkfreq << 1) + cnt)
+            debounce_reset_wait
             com.writeString(string("ROW1 On", com#Carriage_Return, com#Line_Feed))
           quit
 
@@ -137,7 +137,7 @@ pub main | i, x, r
             command_state := constant(2 + 1)
             outa[swd_sel_pin[2]] := 1
             outa[swd_pwr_pin[2]] := 0
-            waitcnt((clkfreq << 1) + cnt)
+            debounce_reset_wait
             com.writeString(string("ROW2 On", com#Carriage_Return, com#Line_Feed))
           quit
 
@@ -147,12 +147,12 @@ pub main | i, x, r
             command_state := constant(3 + 1)
             outa[swd_sel_pin[3]] := 1
             outa[swd_pwr_pin[3]] := 0
-            waitcnt((clkfreq << 1) + cnt)
+            debounce_reset_wait
             com.writeString(string("ROW3 On", com#Carriage_Return, com#Line_Feed))
           quit
 
         $53_57_44_39: ' Ping
-          com.writeString(string("Hello World - v2.2.0", com#Carriage_Return, com#Line_Feed))
+          com.writeString(string("Hello World - v2.3.0", com#Carriage_Return, com#Line_Feed))
           quit
 
     repeat i from 0 to constant(NUM_SWD - 1)
@@ -204,7 +204,7 @@ pri kill_port | x
     x := command_state - 1
     outa[swd_sel_pin[x]] := 0
     outa[swd_pwr_pin[x]] := 1
-    waitcnt((clkfreq << 1) + cnt)
+    debounce_reset_wait
     com.writeString(string("ROW"))
     com.writeString(DECOut(x))
     com.writeString(string(" Off", com#Carriage_Return, com#Line_Feed))
@@ -230,6 +230,14 @@ pri heart_beat | i
           com.writeString(string("SWD"))
           com.writeString(DECOut(i))
           com.writeString(string(" [Testing] 0%", com#Carriage_Return, com#Line_Feed))
+
+pri debounce_reset_wait | i, tmp
+
+  tmp := cnt
+
+  repeat until (cnt - tmp) > (clkfreq >> 1)
+    repeat i from 0 to constant(NUM_SWD - 1)
+      debounce_reset(i)
 
 pri debounce_reset(port)
 
