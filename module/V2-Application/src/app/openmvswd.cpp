@@ -1557,7 +1557,7 @@ void OpenMVSWD::programOpenMVCams()
                     {
                         QMessageBox::critical(this,
                             tr("Program"),
-                            tr("Data Base Error!\n\nPlease re-program!"));
+                            tr("Database Error!\n\nPlease re-program!"));
 
                         CLOSE_PROGRAM_END();
                     }
