@@ -805,6 +805,26 @@ do { \
     m_ui->aboutButton->setEnabled(true); \
     m_ui->programButton->setEnabled(true); \
     m_ui->programButton->setText(tr("Program OpenMV Cams")); \
+    m_ui->enable_00->setEnabled(true); \
+    m_ui->enable_01->setEnabled(true); \
+    m_ui->enable_02->setEnabled(true); \
+    m_ui->enable_03->setEnabled(true); \
+    m_ui->enable_04->setEnabled(true); \
+    m_ui->enable_05->setEnabled(true); \
+    m_ui->enable_06->setEnabled(true); \
+    m_ui->enable_07->setEnabled(true); \
+    m_ui->enable_08->setEnabled(true); \
+    m_ui->enable_09->setEnabled(true); \
+    m_ui->enable_10->setEnabled(true); \
+    m_ui->enable_11->setEnabled(true); \
+    m_ui->enable_12->setEnabled(true); \
+    m_ui->enable_13->setEnabled(true); \
+    m_ui->enable_14->setEnabled(true); \
+    m_ui->enable_15->setEnabled(true); \
+    m_ui->enable_16->setEnabled(true); \
+    m_ui->enable_17->setEnabled(true); \
+    m_ui->enable_18->setEnabled(true); \
+    m_ui->enable_19->setEnabled(true); \
     return; \
 } while(0)
 
@@ -825,6 +845,26 @@ do { \
     m_ui->aboutButton->setEnabled(true); \
     m_ui->programButton->setEnabled(true); \
     m_ui->programButton->setText(tr("Program OpenMV Cams")); \
+    m_ui->enable_00->setEnabled(true); \
+    m_ui->enable_01->setEnabled(true); \
+    m_ui->enable_02->setEnabled(true); \
+    m_ui->enable_03->setEnabled(true); \
+    m_ui->enable_04->setEnabled(true); \
+    m_ui->enable_05->setEnabled(true); \
+    m_ui->enable_06->setEnabled(true); \
+    m_ui->enable_07->setEnabled(true); \
+    m_ui->enable_08->setEnabled(true); \
+    m_ui->enable_09->setEnabled(true); \
+    m_ui->enable_10->setEnabled(true); \
+    m_ui->enable_11->setEnabled(true); \
+    m_ui->enable_12->setEnabled(true); \
+    m_ui->enable_13->setEnabled(true); \
+    m_ui->enable_14->setEnabled(true); \
+    m_ui->enable_15->setEnabled(true); \
+    m_ui->enable_16->setEnabled(true); \
+    m_ui->enable_17->setEnabled(true); \
+    m_ui->enable_18->setEnabled(true); \
+    m_ui->enable_19->setEnabled(true); \
     return; \
 } while(0)
 
@@ -837,6 +877,66 @@ do { \
     QTimer::singleShot(0, this, [this] {programOpenMVCams();}); \
     return; \
 } while(0)
+
+bool rowChecked(Ui::OpenMVSWD *ui, int row)
+{
+    switch(row)
+    {
+        case 0: return ui->enable_00->isChecked()
+                    || ui->enable_01->isChecked()
+                    || ui->enable_02->isChecked()
+                    || ui->enable_03->isChecked()
+                    || ui->enable_04->isChecked();
+        case 1: return ui->enable_05->isChecked()
+                    || ui->enable_06->isChecked()
+                    || ui->enable_07->isChecked()
+                    || ui->enable_08->isChecked()
+                    || ui->enable_09->isChecked();
+        case 2: return ui->enable_10->isChecked()
+                    || ui->enable_11->isChecked()
+                    || ui->enable_12->isChecked()
+                    || ui->enable_13->isChecked()
+                    || ui->enable_14->isChecked();
+        case 3: return ui->enable_15->isChecked()
+                    || ui->enable_16->isChecked()
+                    || ui->enable_17->isChecked()
+                    || ui->enable_18->isChecked()
+                    || ui->enable_19->isChecked();
+        default: return false;
+    }
+
+    return false;
+}
+
+bool getChecked(Ui::OpenMVSWD *ui, int row, int column)
+{
+    switch((row * MAX_COL) + column)
+    {
+        case 0: return ui->enable_00->isChecked();
+        case 1: return ui->enable_01->isChecked();
+        case 2: return ui->enable_02->isChecked();
+        case 3: return ui->enable_03->isChecked();
+        case 4: return ui->enable_04->isChecked();
+        case 5: return ui->enable_05->isChecked();
+        case 6: return ui->enable_06->isChecked();
+        case 7: return ui->enable_07->isChecked();
+        case 8: return ui->enable_08->isChecked();
+        case 9: return ui->enable_09->isChecked();
+        case 10: return ui->enable_10->isChecked();
+        case 11: return ui->enable_11->isChecked();
+        case 12: return ui->enable_12->isChecked();
+        case 13: return ui->enable_13->isChecked();
+        case 14: return ui->enable_14->isChecked();
+        case 15: return ui->enable_15->isChecked();
+        case 16: return ui->enable_16->isChecked();
+        case 17: return ui->enable_17->isChecked();
+        case 18: return ui->enable_18->isChecked();
+        case 19: return ui->enable_19->isChecked();
+        default: return false;
+    }
+
+    return false;
+}
 
 void OpenMVSWD::programOpenMVCams()
 {
@@ -893,44 +993,64 @@ void OpenMVSWD::programOpenMVCams()
         m_ui->aboutButton->setEnabled(false);
         m_ui->programButton->setEnabled(false);
         m_ui->label_00->setText(tr("SWD 1"));
+        m_ui->enable_00->setEnabled(false);
         m_ui->progressBar_00->setValue(0);
         m_ui->label_01->setText(tr("SWD 2"));
+        m_ui->enable_01->setEnabled(false);
         m_ui->progressBar_01->setValue(0);
         m_ui->label_02->setText(tr("SWD 3"));
+        m_ui->enable_02->setEnabled(false);
         m_ui->progressBar_02->setValue(0);
         m_ui->label_03->setText(tr("SWD 4"));
+        m_ui->enable_03->setEnabled(false);
         m_ui->progressBar_03->setValue(0);
         m_ui->label_04->setText(tr("SWD 5"));
+        m_ui->enable_04->setEnabled(false);
         m_ui->progressBar_04->setValue(0);
         m_ui->label_05->setText(tr("SWD 6"));
+        m_ui->enable_05->setEnabled(false);
         m_ui->progressBar_05->setValue(0);
         m_ui->label_06->setText(tr("SWD 7"));
+        m_ui->enable_06->setEnabled(false);
         m_ui->progressBar_06->setValue(0);
         m_ui->label_07->setText(tr("SWD 8"));
+        m_ui->enable_07->setEnabled(false);
         m_ui->progressBar_07->setValue(0);
         m_ui->label_08->setText(tr("SWD 9"));
+        m_ui->enable_08->setEnabled(false);
         m_ui->progressBar_08->setValue(0);
         m_ui->label_09->setText(tr("SWD 10"));
+        m_ui->enable_09->setEnabled(false);
         m_ui->progressBar_09->setValue(0);
         m_ui->label_10->setText(tr("SWD 11"));
+        m_ui->enable_10->setEnabled(false);
         m_ui->progressBar_10->setValue(0);
         m_ui->label_11->setText(tr("SWD 12"));
+        m_ui->enable_11->setEnabled(false);
         m_ui->progressBar_11->setValue(0);
         m_ui->label_12->setText(tr("SWD 13"));
+        m_ui->enable_12->setEnabled(false);
         m_ui->progressBar_12->setValue(0);
         m_ui->label_13->setText(tr("SWD 14"));
+        m_ui->enable_13->setEnabled(false);
         m_ui->progressBar_13->setValue(0);
         m_ui->label_14->setText(tr("SWD 15"));
+        m_ui->enable_14->setEnabled(false);
         m_ui->progressBar_14->setValue(0);
         m_ui->label_15->setText(tr("SWD 16"));
+        m_ui->enable_15->setEnabled(false);
         m_ui->progressBar_15->setValue(0);
         m_ui->label_16->setText(tr("SWD 17"));
+        m_ui->enable_16->setEnabled(false);
         m_ui->progressBar_16->setValue(0);
         m_ui->label_17->setText(tr("SWD 18"));
+        m_ui->enable_17->setEnabled(false);
         m_ui->progressBar_17->setValue(0);
         m_ui->label_18->setText(tr("SWD 19"));
+        m_ui->enable_18->setEnabled(false);
         m_ui->progressBar_18->setValue(0);
         m_ui->label_19->setText(tr("SWD 20"));
+        m_ui->enable_19->setEnabled(false);
         m_ui->progressBar_19->setValue(0);
 
         OpenMVSWDSerialPort port;
@@ -1153,6 +1273,11 @@ void OpenMVSWD::programOpenMVCams()
 
         for(int i = 0; i < MAX_ROW; i++)
         {
+            if(!rowChecked(m_ui, i))
+            {
+                continue;
+            }
+
             // Activate Row ///////////////////////////////////////////////////
             {
                 QApplication::setOverrideCursor(Qt::WaitCursor);
@@ -1198,6 +1323,11 @@ void OpenMVSWD::programOpenMVCams()
 
             for(int j = 0; j < MAX_COL; j++)
             {
+                if(!getChecked(m_ui, i, j))
+                {
+                    continue;
+                }
+
                 state[j] = tries;
 
                 // Start Programming //////////////////////////////////////////

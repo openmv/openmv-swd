@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>694</width>
-    <height>414</height>
+    <height>422</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -149,10 +149,38 @@
        <widget class="QWidget" name="swd_00" native="true">
         <layout class="QVBoxLayout" name="verticalLayout_00">
          <item>
-          <widget class="QLabel" name="label_00">
-           <property name="text">
-            <string>SWD 1</string>
-           </property>
+          <widget class="QWidget" name="widget_00" native="true">
+           <layout class="QHBoxLayout" name="horizontalLayout_00">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_00">
+              <property name="text">
+               <string>SWD 1</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="enable_00">
+              <property name="text">
+               <string>Enable</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </widget>
          </item>
          <item>
@@ -169,10 +197,38 @@
        <widget class="QWidget" name="swd_01" native="true">
         <layout class="QVBoxLayout" name="verticalLayout_01">
          <item>
-          <widget class="QLabel" name="label_01">
-           <property name="text">
-            <string>SWD 2</string>
-           </property>
+          <widget class="QWidget" name="widget_01" native="true">
+           <layout class="QHBoxLayout" name="horizontalLayout_01">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_01">
+              <property name="text">
+               <string>SWD 2</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="enable_01">
+              <property name="text">
+               <string>Enable</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </widget>
          </item>
          <item>
@@ -189,10 +245,38 @@
        <widget class="QWidget" name="swd_10" native="true">
         <layout class="QVBoxLayout" name="verticalLayout_10">
          <item>
-          <widget class="QLabel" name="label_10">
-           <property name="text">
-            <string>SWD 11</string>
-           </property>
+          <widget class="QWidget" name="widget_10" native="true">
+           <layout class="QHBoxLayout" name="horizontalLayout_10">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label_10">
+              <property name="text">
+               <string>SWD 11</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="enable_10">
+              <property name="text">
+               <string>Enable</string>
+              </property>
+              <property name="checked">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </widget>
          </item>
          <item>
@@ -206,344 +290,820 @@
        </widget>
       </item>
       <item row="0" column="2">
-       <widget class="QWidget" name="swd_02" native="true">
-        <layout class="QVBoxLayout" name="verticalLayout_02">
-         <item>
-          <widget class="QLabel" name="label_02">
-           <property name="text">
-            <string>SWD 3</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QProgressBar" name="progressBar_02">
-           <property name="value">
+      <widget class="QWidget" name="swd_02" native="true">
+       <layout class="QVBoxLayout" name="verticalLayout_02">
+        <item>
+         <widget class="QWidget" name="widget_02" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_02">
+           <property name="leftMargin">
             <number>0</number>
            </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_02">
+             <property name="text">
+              <string>SWD 3</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="enable_02">
+             <property name="text">
+              <string>Enable</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QProgressBar" name="progressBar_02">
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       </item>
       <item row="3" column="0">
-       <widget class="QWidget" name="swd_15" native="true">
-        <layout class="QVBoxLayout" name="verticalLayout_15">
-         <item>
-          <widget class="QLabel" name="label_15">
-           <property name="text">
-            <string>SWD 16</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QProgressBar" name="progressBar_15">
-           <property name="value">
+      <widget class="QWidget" name="swd_15" native="true">
+       <layout class="QVBoxLayout" name="verticalLayout_15">
+        <item>
+         <widget class="QWidget" name="widget_15" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_15">
+           <property name="leftMargin">
             <number>0</number>
            </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_15">
+             <property name="text">
+              <string>SWD 16</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="enable_15">
+             <property name="text">
+              <string>Enable</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QProgressBar" name="progressBar_15">
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       </item>
       <item row="1" column="0">
-       <widget class="QWidget" name="swd_05" native="true">
-        <layout class="QVBoxLayout" name="verticalLayout_05">
-         <item>
-          <widget class="QLabel" name="label_05">
-           <property name="text">
-            <string>SWD 6</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QProgressBar" name="progressBar_05">
-           <property name="value">
+      <widget class="QWidget" name="swd_05" native="true">
+       <layout class="QVBoxLayout" name="verticalLayout_05">
+        <item>
+         <widget class="QWidget" name="widget_05" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_05">
+           <property name="leftMargin">
             <number>0</number>
            </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_05">
+             <property name="text">
+              <string>SWD 6</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="enable_05">
+             <property name="text">
+              <string>Enable</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QProgressBar" name="progressBar_05">
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       </item>
       <item row="0" column="3">
-       <widget class="QWidget" name="swd_03" native="true">
-        <layout class="QVBoxLayout" name="verticalLayout_03">
-         <item>
-          <widget class="QLabel" name="label_03">
-           <property name="text">
-            <string>SWD 4</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QProgressBar" name="progressBar_03">
-           <property name="value">
+      <widget class="QWidget" name="swd_03" native="true">
+       <layout class="QVBoxLayout" name="verticalLayout_03">
+        <item>
+         <widget class="QWidget" name="widget_03" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_03">
+           <property name="leftMargin">
             <number>0</number>
            </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_03">
+             <property name="text">
+              <string>SWD 4</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="enable_03">
+             <property name="text">
+              <string>Enable</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QProgressBar" name="progressBar_03">
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       </item>
       <item row="0" column="4">
-       <widget class="QWidget" name="swd_04" native="true">
-        <layout class="QVBoxLayout" name="verticalLayout_04">
-         <item>
-          <widget class="QLabel" name="label_04">
-           <property name="text">
-            <string>SWD 5</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QProgressBar" name="progressBar_04">
-           <property name="value">
+      <widget class="QWidget" name="swd_04" native="true">
+       <layout class="QVBoxLayout" name="verticalLayout_04">
+        <item>
+         <widget class="QWidget" name="widget_04" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_04">
+           <property name="leftMargin">
             <number>0</number>
            </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_04">
+             <property name="text">
+              <string>SWD 5</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="enable_04">
+             <property name="text">
+              <string>Enable</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QProgressBar" name="progressBar_04">
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QWidget" name="swd_06" native="true">
-        <layout class="QVBoxLayout" name="verticalLayout_06">
-         <item>
-          <widget class="QLabel" name="label_06">
-           <property name="text">
-            <string>SWD 7</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QProgressBar" name="progressBar_06">
-           <property name="value">
+      <widget class="QWidget" name="swd_06" native="true">
+       <layout class="QVBoxLayout" name="verticalLayout_06">
+        <item>
+         <widget class="QWidget" name="widget_06" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_06">
+           <property name="leftMargin">
             <number>0</number>
            </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_06">
+             <property name="text">
+              <string>SWD 7</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="enable_06">
+             <property name="text">
+              <string>Enable</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QProgressBar" name="progressBar_06">
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QWidget" name="swd_11" native="true">
-        <layout class="QVBoxLayout" name="verticalLayout_11">
-         <item>
-          <widget class="QLabel" name="label_11">
-           <property name="text">
-            <string>SWD 12</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QProgressBar" name="progressBar_11">
-           <property name="value">
+      <widget class="QWidget" name="swd_11" native="true">
+       <layout class="QVBoxLayout" name="verticalLayout_11">
+        <item>
+         <widget class="QWidget" name="widget_11" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_11">
+           <property name="leftMargin">
             <number>0</number>
            </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_11">
+             <property name="text">
+              <string>SWD 12</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="enable_11">
+             <property name="text">
+              <string>Enable</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QProgressBar" name="progressBar_11">
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QWidget" name="swd_16" native="true">
-        <layout class="QVBoxLayout" name="verticalLayout_16">
-         <item>
-          <widget class="QLabel" name="label_16">
-           <property name="text">
-            <string>SWD 17</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QProgressBar" name="progressBar_16">
-           <property name="value">
+      <widget class="QWidget" name="swd_16" native="true">
+       <layout class="QVBoxLayout" name="verticalLayout_16">
+        <item>
+         <widget class="QWidget" name="widget_16" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_16">
+           <property name="leftMargin">
             <number>0</number>
            </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_16">
+             <property name="text">
+              <string>SWD 17</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="enable_16">
+             <property name="text">
+              <string>Enable</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QProgressBar" name="progressBar_16">
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       </item>
       <item row="1" column="2">
-       <widget class="QWidget" name="swd_07" native="true">
-        <layout class="QVBoxLayout" name="verticalLayout_07">
-         <item>
-          <widget class="QLabel" name="label_07">
-           <property name="text">
-            <string>SWD 8</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QProgressBar" name="progressBar_07">
-           <property name="value">
+      <widget class="QWidget" name="swd_07" native="true">
+       <layout class="QVBoxLayout" name="verticalLayout_07">
+        <item>
+         <widget class="QWidget" name="widget_07" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_07">
+           <property name="leftMargin">
             <number>0</number>
            </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_07">
+             <property name="text">
+              <string>SWD 8</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="enable_07">
+             <property name="text">
+              <string>Enable</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QProgressBar" name="progressBar_07">
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       </item>
       <item row="2" column="2">
-       <widget class="QWidget" name="swd_12" native="true">
-        <layout class="QVBoxLayout" name="verticalLayout_12">
-         <item>
-          <widget class="QLabel" name="label_12">
-           <property name="text">
-            <string>SWD 13</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QProgressBar" name="progressBar_12">
-           <property name="value">
+      <widget class="QWidget" name="swd_12" native="true">
+       <layout class="QVBoxLayout" name="verticalLayout_12">
+        <item>
+         <widget class="QWidget" name="widget_12" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_12">
+           <property name="leftMargin">
             <number>0</number>
            </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_12">
+             <property name="text">
+              <string>SWD 13</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="enable_12">
+             <property name="text">
+              <string>Enable</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QProgressBar" name="progressBar_12">
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       </item>
       <item row="3" column="2">
-       <widget class="QWidget" name="swd_17" native="true">
-        <layout class="QVBoxLayout" name="verticalLayout_17">
-         <item>
-          <widget class="QLabel" name="label_17">
-           <property name="text">
-            <string>SWD 18</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QProgressBar" name="progressBar_17">
-           <property name="value">
+      <widget class="QWidget" name="swd_17" native="true">
+       <layout class="QVBoxLayout" name="verticalLayout_17">
+        <item>
+         <widget class="QWidget" name="widget_17" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_17">
+           <property name="leftMargin">
             <number>0</number>
            </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_17">
+             <property name="text">
+              <string>SWD 18</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="enable_17">
+             <property name="text">
+              <string>Enable</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QProgressBar" name="progressBar_17">
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       </item>
       <item row="1" column="3">
-       <widget class="QWidget" name="swd_08" native="true">
-        <layout class="QVBoxLayout" name="verticalLayout_08">
-         <item>
-          <widget class="QLabel" name="label_08">
-           <property name="text">
-            <string>SWD 9</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QProgressBar" name="progressBar_08">
-           <property name="value">
+      <widget class="QWidget" name="swd_08" native="true">
+       <layout class="QVBoxLayout" name="verticalLayout_08">
+        <item>
+         <widget class="QWidget" name="widget_08" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_08">
+           <property name="leftMargin">
             <number>0</number>
            </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_08">
+             <property name="text">
+              <string>SWD 9</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="enable_08">
+             <property name="text">
+              <string>Enable</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QProgressBar" name="progressBar_08">
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       </item>
       <item row="2" column="3">
-       <widget class="QWidget" name="swd_13" native="true">
-        <layout class="QVBoxLayout" name="verticalLayout_13">
-         <item>
-          <widget class="QLabel" name="label_13">
-           <property name="text">
-            <string>SWD 14</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QProgressBar" name="progressBar_13">
-           <property name="value">
+      <widget class="QWidget" name="swd_13" native="true">
+       <layout class="QVBoxLayout" name="verticalLayout_13">
+        <item>
+         <widget class="QWidget" name="widget_13" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_13">
+           <property name="leftMargin">
             <number>0</number>
            </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_13">
+             <property name="text">
+              <string>SWD 14</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="enable_13">
+             <property name="text">
+              <string>Enable</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QProgressBar" name="progressBar_13">
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       </item>
       <item row="3" column="3">
-       <widget class="QWidget" name="swd_18" native="true">
-        <layout class="QVBoxLayout" name="verticalLayout_18">
-         <item>
-          <widget class="QLabel" name="label_18">
-           <property name="text">
-            <string>SWD 19</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QProgressBar" name="progressBar_18">
-           <property name="value">
+      <widget class="QWidget" name="swd_18" native="true">
+       <layout class="QVBoxLayout" name="verticalLayout_18">
+        <item>
+         <widget class="QWidget" name="widget_18" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_18">
+           <property name="leftMargin">
             <number>0</number>
            </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_18">
+             <property name="text">
+              <string>SWD 19</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="enable_18">
+             <property name="text">
+              <string>Enable</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QProgressBar" name="progressBar_18">
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       </item>
       <item row="1" column="4">
-       <widget class="QWidget" name="swd_09" native="true">
-        <layout class="QVBoxLayout" name="verticalLayout_09">
-         <item>
-          <widget class="QLabel" name="label_09">
-           <property name="text">
-            <string>SWD 10</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QProgressBar" name="progressBar_09">
-           <property name="value">
+      <widget class="QWidget" name="swd_09" native="true">
+       <layout class="QVBoxLayout" name="verticalLayout_09">
+        <item>
+         <widget class="QWidget" name="widget_09" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_09">
+           <property name="leftMargin">
             <number>0</number>
            </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_09">
+             <property name="text">
+              <string>SWD 10</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="enable_09">
+             <property name="text">
+              <string>Enable</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QProgressBar" name="progressBar_09">
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       </item>
       <item row="2" column="4">
-       <widget class="QWidget" name="swd_14" native="true">
-        <layout class="QVBoxLayout" name="verticalLayout_14">
-         <item>
-          <widget class="QLabel" name="label_14">
-           <property name="text">
-            <string>SWD 15</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QProgressBar" name="progressBar_14">
-           <property name="value">
+      <widget class="QWidget" name="swd_14" native="true">
+       <layout class="QVBoxLayout" name="verticalLayout_14">
+        <item>
+         <widget class="QWidget" name="widget_14" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_14">
+           <property name="leftMargin">
             <number>0</number>
            </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_14">
+             <property name="text">
+              <string>SWD 15</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="enable_14">
+             <property name="text">
+              <string>Enable</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QProgressBar" name="progressBar_14">
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       </item>
       <item row="3" column="4">
-       <widget class="QWidget" name="swd_19" native="true">
-        <layout class="QVBoxLayout" name="verticalLayout_19">
-         <item>
-          <widget class="QLabel" name="label_19">
-           <property name="text">
-            <string>SWD 20</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QProgressBar" name="progressBar_19">
-           <property name="value">
+      <widget class="QWidget" name="swd_19" native="true">
+       <layout class="QVBoxLayout" name="verticalLayout_19">
+        <item>
+         <widget class="QWidget" name="widget_19" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_19">
+           <property name="leftMargin">
             <number>0</number>
            </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_19">
+             <property name="text">
+              <string>SWD 20</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="enable_19">
+             <property name="text">
+              <string>Enable</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QProgressBar" name="progressBar_19">
+          <property name="value">
+           <number>0</number>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
       </item>
      </layout>
     </widget>
