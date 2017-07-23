@@ -34,6 +34,8 @@ void OpenMVSWDSerialPort_private::open(const QString &portName)
     }
 
     m_port = new QSerialPort(portName, this);
+    // QSerialPort is buggy unless this is set.
+    m_port->setReadBufferSize(1000000);
 
     if((!m_port->setBaudRate(BAUD_RATE))
     || (!m_port->open(QIODevice::ReadWrite)))
