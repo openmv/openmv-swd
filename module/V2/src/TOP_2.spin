@@ -152,7 +152,7 @@ pub main | i, x, r
           quit
 
         $53_57_44_39: ' Ping
-          com.writeString(string("Hello World - v2.3.0", com#Carriage_Return, com#Line_Feed))
+          com.writeString(string("Hello World - v2.6.0", com#Carriage_Return, com#Line_Feed))
           quit
 
     repeat i from 0 to constant(NUM_SWD - 1)

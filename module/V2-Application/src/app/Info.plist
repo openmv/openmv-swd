@@ -7,7 +7,7 @@
 	<key>NSSupportsAutomaticGraphicsSwitching</key>
 	<true/>
 	<key>NSHumanReadableCopyright</key>
-	<string>(C) 2016 OpenMV, LLC</string>
+	<string>(C) 2018 OpenMV, LLC</string>
 	<key>CFBundleIconFile</key>
 	<string>openmv</string>
 	<key>CFBundlePackageType</key>
