@@ -4,44 +4,57 @@ con
 
   M4_TARGET_ID_CODE_1 = $2BA0_1477 ' STM32F4
   M7_TARGET_ID_CODE_1 = $5BA0_2477 ' STM32F7
-  CTRL_STAT_W_VALUE = $5000_0000 ' STM32F4/STM32F7
-  CTRL_STAT_R_VALUE = $F000_0000 ' STM32F4/STM32F7
-  CTRL_STAT_M_VALUE = $F000_0000 ' STM32F4/STM32F7
+  H7_TARGET_ID_CODE_1 = $6BA0_2477 ' STM32H7
+  CTRL_STAT_W_VALUE = $5000_0000 ' STM32F4/STM32F7/STM32H7
+  CTRL_STAT_R_VALUE = $F000_0000 ' STM32F4/STM32F7/STM32H7
+  CTRL_STAT_M_VALUE = $F000_0000 ' STM32F4/STM32F7/STM32H7
   M4_TARGET_ID_CODE_2 = $2477_0011 ' STM32F4
   M7_TARGET_ID_CODE_2 = $7477_0001 ' STM32F7
-  CSW_W_VALUE = $2300_0012 ' STM32F4/STM32F7
+  H7_TARGET_ID_CODE_2 = $8477_0001 ' STM32H7
+  CSW_W_VALUE = $2300_0012 ' STM32F4/STM32F7/STM32H7
 
-  HALT_1_ADDRESS = $E000_EDF0 ' STM32F4/STM32F7
-  HALT_1_VALUE = $A05F_0003 ' STM32F4/STM32F7
-  HALT_2_ADDRESS = $E000_EDFC ' STM32F4/STM32F7
-  HALT_2_VALUE = $0000_0001 ' STM32F4/STM32F7
-  HALT_3_ADDRESS = $E000_ED0C ' STM32F4/STM32F7
-  HALT_3_VALUE = $05FA_0004 ' STM32F4/STM32F7
+  HALT_1_ADDRESS = $E000_EDF0 ' STM32F4/STM32F7/STM32H7
+  HALT_1_VALUE = $A05F_0003 ' STM32F4/STM32F7/STM32H7
+  HALT_2_ADDRESS = $E000_EDFC ' STM32F4/STM32F7/STM32H7
+  HALT_2_VALUE = $0000_0001 ' STM32F4/STM32F7/STM32H7
+  HALT_3_ADDRESS = $E000_ED0C ' STM32F4/STM32F7/STM32H7
+  HALT_3_VALUE = $05FA_0004 ' STM32F4/STM32F7/STM32H7
 
-  FLASH_UNLOCK_ADDRESS = $4002_3C04 ' STM32F4/STM32F7
-  FLASH_UNLOCK_KEY_1 = $4567_0123 ' STM32F4/STM32F7
-  FLASH_UNLOCK_KEY_2 = $CDEF_89AB ' STM32F4/STM32F7
+  M47_FLASH_UNLOCK_ADDRESS = $4002_3C04 ' STM32F4/STM32F7
+  H7_FLASH_UNLOCK_ADDRESS_0 = $5200_2004 ' STM32H7
+  H7_FLASH_UNLOCK_ADDRESS_1 = $5200_2104 ' STM32H7
+  FLASH_UNLOCK_KEY_1 = $4567_0123 ' STM32F4/STM32F7/STM32H7
+  FLASH_UNLOCK_KEY_2 = $CDEF_89AB ' STM32F4/STM32F7/STM32H7
 
-  MASS_ERASE_ADDRESS = $4002_3C10 ' STM32F4/STM32F7
-  MASS_ERASE_VALUE = $0001_8205 ' STM32F4/STM32F7
+  M47_MASS_ERASE_ADDRESS = $4002_3C10 ' STM32F4/STM32F7
+  H7_MASS_ERASE_ADDRESS_0 = $5200_200C ' STM32H7
+  H7_MASS_ERASE_ADDRESS_1 = $5200_210C ' STM32H7
+  M47_MASS_ERASE_VALUE = $0001_8205 ' STM32F4/STM32F7
+  H7_MASS_ERASE_VALUE = $0000_00AA ' STM32H7
 
-  MASS_ERASE_STATUS_ADDRESS = $4002_3C0C ' STM32F4/STM32F7
-  MASS_ERASE_STATUS_R = $0001_0000 ' STM32F4/STM32F7
-  MASS_ERASE_STATUS_M = $0001_0000 ' STM32F4/STM32F7
+  M47_MASS_ERASE_STATUS_ADDRESS = $4002_3C0C ' STM32F4/STM32F7
+  H7_MASS_ERASE_STATUS_ADDRESS_0 = $5200_2010 ' STM32H7
+  H7_MASS_ERASE_STATUS_ADDRESS_1 = $5200_2110 ' STM32H7
+  M47_MASS_ERASE_STATUS_MASK = $0001_0000 ' STM32F4/STM32F7
+  H7_MASS_ERASE_STATUS_MASK = $0000_0001 ' STM32H7
 
   DATA_ADDRESS = $0800_0000 ' MUST BE 4KB ALIGNED
 
   M4_ID_ADDRESS = $1FFF_7A10
   M7_ID_ADDRESS = $1FF0_F420
+  H7_ID_ADDRESS = $1FF1_E800
 
-  M4_FB_ADDRESS = $2000_0008
-  M7_FB_ADDRESS = $2002_0008
+  M4_FB_ADDRESS = $2000_0018
+  M7_FB_ADDRESS = $2002_0018
+  H7_FB_ADDRESS = $2400_0018
 
-  M4_ERASE_TIMEOUT = 15
+  M4_ERASE_TIMEOUT = 10
   M7_ERASE_TIMEOUT = 10
+  H7_ERASE_TIMEOUT = 10
 
-  M4_TEST_TIMEOUT = 15
+  M4_TEST_TIMEOUT = 10
   M7_TEST_TIMEOUT = 10
+  H7_TEST_TIMEOUT = 10
 
 var
 
@@ -103,8 +116,10 @@ pub start(io_pin, clk_pin, reset_pin)
 
   m4_erase_time := clkfreq * M4_ERASE_TIMEOUT
   m7_erase_time := clkfreq * M7_ERASE_TIMEOUT
+  h7_erase_time := clkfreq * H7_ERASE_TIMEOUT
   m4_test_time := clkfreq * M4_TEST_TIMEOUT
   m7_test_time := clkfreq * M7_TEST_TIMEOUT
+  h7_test_time := clkfreq * H7_TEST_TIMEOUT
 
   cog_id := cognew(@cog_addr, @swd_action) + 1
 
@@ -264,6 +279,7 @@ sub_init      mov fatal_error, #0 ' disable fatal error
 
               cmp y, m4_id_code1 wz
 if_nz         cmp y, m7_id_code1 wz
+if_nz         cmp y, h7_id_code1 wz
 if_nz         jmp #fatal_error
               mov c, y ' backup
               wrlong c, device_addr
@@ -305,6 +321,8 @@ if_nz         jmp #fatal_error
 if_z          mov x, m4_id_code2
               cmp c, m7_id_code1 wz
 if_z          mov x, m7_id_code2
+              cmp c, h7_id_code1 wz
+if_z          mov x, h7_id_code2
               cmp y, x wz
 if_nz         jmp #fatal_error
 
@@ -340,42 +358,80 @@ if_nz         jmp #fatal_error
 
               ' unlock and erase flash
 
-              mov a, flash_key_a
-              mov b, flash_key_1
+              cmp c, h7_id_code1 wz
+if_nz         mov a, m47_f_key_a
+if_z          mov a, h7_f_key_a_0
+              mov b, f_key_1
               call #ahb_w
 
-              mov a, flash_key_a
-              mov b, flash_key_2
+              cmp c, h7_id_code1 wz
+if_nz         mov a, m47_f_key_a
+if_z          mov a, h7_f_key_a_0
+              mov b, f_key_2
               call #ahb_w
 
-              mov a, flash_ctrl_a
-              mov b, flash_ctrl_v
+              cmp c, h7_id_code1 wz
+if_nz         mov a, m47_f_ctrl_a
+if_nz         mov b, m47_f_ctrl_v
+if_z          mov a, h7_f_ctrl_a_0
+if_z          mov b, h7_f_ctrl_v
+              call #ahb_w
+
+              cmp c, h7_id_code1 wz
+if_nz         jmp #sub_init_j_0
+
+              mov a, h7_f_key_a_1
+              mov b, f_key_1
+              call #ahb_w
+
+              mov a, h7_f_key_a_1
+              mov b, f_key_2
+              call #ahb_w
+
+              mov a, h7_f_ctrl_a_1
+              mov b, h7_f_ctrl_v
               call #ahb_w
 
               ' wait till done
 
-              mov w_cnt, cnt
+sub_init_j_0  mov w_cnt, cnt
 sub_init_l    mov x, cnt
               sub x, w_cnt
               cmp c, m4_id_code1 wz
 if_z          cmp x, m4_erase_time wc
               cmp c, m7_id_code1 wz
 if_z          cmp x, m7_erase_time wc
+              cmp c, h7_id_code1 wz
+if_z          cmp x, h7_erase_time wc
 if_nc         jmp #fatal_error
 
-              mov a, flash_sts_a
+              cmp c, h7_id_code1 wz
+if_nz         mov a, m47_f_sts_a
+if_z          mov a, h7_f_sts_a_0
               call #ahb_r
 
-              and b, flash_sts_m
-              cmp b, flash_sts_r wz
-if_z          jmp #sub_init_l
+              cmp c, h7_id_code1 wz
+if_nz         test b, m47_f_sts_msk wc
+if_z          test b, h7_f_sts_msk wc
+if_c          jmp #sub_init_l
+
+              cmp c, h7_id_code1 wz
+if_nz         jmp #sub_init_j_1
+
+              mov a, h7_f_sts_a_1
+              call #ahb_r
+
+              test b, h7_f_sts_msk wc
+if_c          jmp #sub_init_l
 
               ' clear test address
 
-              cmp c, m4_id_code1 wz
+sub_init_j_1  cmp c, m4_id_code1 wz
 if_z          mov a, m4_test_addr
               cmp c, m7_id_code1 wz
 if_z          mov a, m7_test_addr
+              cmp c, h7_id_code1 wz
+if_z          mov a, h7_test_addr
               mov b, #0
               call #ahb_w
 
@@ -385,6 +441,8 @@ if_z          mov a, m7_test_addr
 if_z          mov a, m4_id_addr
               cmp c, m7_id_code1 wz
 if_z          mov a, m7_id_addr
+              cmp c, h7_id_code1 wz
+if_z          mov a, h7_id_addr
               call #ahb_r
               mov c, id_addr
               wrlong b, c
@@ -422,6 +480,8 @@ sub_fini      ' wait for the test to finish
 if_z          mov x, m4_test_time
               cmp c, m7_id_code1 wz
 if_z          mov x, m7_test_time
+              cmp c, h7_id_code1 wz
+if_z          mov x, h7_test_time
               add x, cnt
               waitcnt x, #0
 
@@ -445,6 +505,7 @@ if_z          mov x, m7_test_time
 
               cmp y, m4_id_code1 wz
 if_nz         cmp y, m7_id_code1 wz
+if_nz         cmp y, h7_id_code1 wz
 if_nz         jmp #fatal_error
 
               ' power up req
@@ -484,6 +545,8 @@ if_nz         jmp #fatal_error
 if_z          mov x, m4_id_code2
               cmp c, m7_id_code1 wz
 if_z          mov x, m7_id_code2
+              cmp c, h7_id_code1 wz
+if_z          mov x, h7_id_code2
               cmp y, x wz
 if_nz         jmp #fatal_error
 
@@ -523,6 +586,8 @@ if_nz         jmp #fatal_error
 if_z          mov a, m4_test_addr
               cmp c, m7_id_code1 wz
 if_z          mov a, m7_test_addr
+              cmp c, h7_id_code1 wz
+if_z          mov a, h7_test_addr
               call #ahb_r
 
               cmp b, deadbeef wz
@@ -535,11 +600,13 @@ sub_fini_ret  ret
 
 m4_id_code1   long M4_TARGET_ID_CODE_1
 m7_id_code1   long M7_TARGET_ID_CODE_1
+h7_id_code1   long H7_TARGET_ID_CODE_1
 ctrl_stat_w   long CTRL_STAT_W_VALUE
 ctrl_stat_r   long CTRL_STAT_R_VALUE
 ctrl_stat_m   long CTRL_STAT_M_VALUE
 m4_id_code2   long M4_TARGET_ID_CODE_2
 m7_id_code2   long M7_TARGET_ID_CODE_2
+h7_id_code2   long H7_TARGET_ID_CODE_2
 csw_w         long CSW_W_VALUE
 
 halt_1_a      long HALT_1_ADDRESS
@@ -549,22 +616,31 @@ halt_2_v      long HALT_2_VALUE
 halt_3_a      long HALT_3_ADDRESS
 halt_3_v      long HALT_3_VALUE
 
-flash_key_a   long FLASH_UNLOCK_ADDRESS
-flash_key_1   long FLASH_UNLOCK_KEY_1
-flash_key_2   long FLASH_UNLOCK_KEY_2
+m47_f_key_a   long M47_FLASH_UNLOCK_ADDRESS
+h7_f_key_a_0  long H7_FLASH_UNLOCK_ADDRESS_0
+h7_f_key_a_1  long H7_FLASH_UNLOCK_ADDRESS_1
+f_key_1       long FLASH_UNLOCK_KEY_1
+f_key_2       long FLASH_UNLOCK_KEY_2
 
-flash_ctrl_a  long MASS_ERASE_ADDRESS
-flash_ctrl_v  long MASS_ERASE_VALUE
+m47_f_ctrl_a  long M47_MASS_ERASE_ADDRESS
+h7_f_ctrl_a_0 long H7_MASS_ERASE_ADDRESS_0
+h7_f_ctrl_a_1 long H7_MASS_ERASE_ADDRESS_1
+m47_f_ctrl_v  long M47_MASS_ERASE_VALUE
+h7_f_ctrl_v   long H7_MASS_ERASE_VALUE
 
-flash_sts_a   long MASS_ERASE_STATUS_ADDRESS
-flash_sts_r   long MASS_ERASE_STATUS_R
-flash_sts_m   long MASS_ERASE_STATUS_M
+m47_f_sts_a   long M47_MASS_ERASE_STATUS_ADDRESS
+h7_f_sts_a_0  long H7_MASS_ERASE_STATUS_ADDRESS_0
+h7_f_sts_a_1  long H7_MASS_ERASE_STATUS_ADDRESS_1
+m47_f_sts_msk long M47_MASS_ERASE_STATUS_MASK
+h7_f_sts_msk  long H7_MASS_ERASE_STATUS_MASK
 
 m4_id_addr    long M4_ID_ADDRESS
 m7_id_addr    long M7_ID_ADDRESS
+h7_id_addr    long H7_ID_ADDRESS
 
 m4_test_addr  long M4_FB_ADDRESS
 m7_test_addr  long M7_FB_ADDRESS
+h7_test_addr  long H7_FB_ADDRESS
 
 deadbeef      long $DEAD_BEEF
 
@@ -746,8 +822,10 @@ block_addr    long 0
 
 m4_erase_time long 0
 m7_erase_time long 0
+h7_erase_time long 0
 m4_test_time  long 0
 m7_test_time  long 0
+h7_test_time  long 0
 
 w_cnt         res 1
 r_cnt         res 1

@@ -37,6 +37,7 @@ dat
 
   m4_firmware_file_name byte "OPENMV2/OPENMV.BIN", 0 ' 8.3 file name
   m7_firmware_file_name byte "OPENMV3/OPENMV.BIN", 0 ' 8.3 file name
+  h7_firmware_file_name byte "OPENMV4/OPENMV.BIN", 0 ' 8.3 file name
 
 obj
 
@@ -152,7 +153,7 @@ pub main | i, x, r
           quit
 
         $53_57_44_39: ' Ping
-          com.writeString(string("Hello World - v2.6.0", com#Carriage_Return, com#Line_Feed))
+          com.writeString(string("Hello World - v3.2.0", com#Carriage_Return, com#Line_Feed))
           quit
 
     repeat i from 0 to constant(NUM_SWD - 1)
@@ -274,6 +275,8 @@ pri begin_programming(port) ' may abort... returns 0 normally - non-zero on abor
         fat[port].openFile(@m4_firmware_file_name, "R")
       swd#M7_TARGET_ID_CODE_1:
         fat[port].openFile(@m7_firmware_file_name, "R")
+      swd#H7_TARGET_ID_CODE_1:
+        fat[port].openFile(@h7_firmware_file_name, "R")
 
     remaining_blocks[port] := (fat[port].fileSize + 511) >> 9
 
@@ -385,6 +388,8 @@ pri finished(port) ' may abort... returns 0 normally - non-zero on abort
         com.writeString(string("M4"))
       swd#M7_TARGET_ID_CODE_1:
         com.writeString(string("M7"))
+      swd#H7_TARGET_ID_CODE_1:
+        com.writeString(string("H7"))
     com.writeString(string(":"))
     com.writeString(HEXOut(long[swd[port].get_id][2]))
     com.writeString(HEXOut(long[swd[port].get_id][1]))
