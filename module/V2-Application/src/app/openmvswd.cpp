@@ -684,88 +684,77 @@ bool OpenMVSWD::programSDCard2(bool noMessage)
         QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok)
     == QMessageBox::Ok)
     {
-        if(QMessageBox::information(this,
+        int answer = QMessageBox::question(this,
             tr("Program SD Card"),
-            tr("Insert the jig's SD card into the computer."),
-            QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok)
-        == QMessageBox::Ok)
+            tr("Are you programming the OpenMV Cam H7 Plus?"),
+            QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel, QMessageBox::Yes);
+
+        if((answer == QMessageBox::Yes) || (answer == QMessageBox::No))
         {
-            QStringList drives;
-
-            foreach(const QStorageInfo &info, QStorageInfo::mountedVolumes())
+            if(QMessageBox::information(this,
+                tr("Program SD Card"),
+                tr("Insert the jig's SD card into the computer."),
+                QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok)
+            == QMessageBox::Ok)
             {
-                if(info.isValid()
-                && info.isReady()
-                && (!info.isRoot())
-                && (!info.isReadOnly())
-                && (QString::fromUtf8(info.fileSystemType()).contains(QStringLiteral("fat"), Qt::CaseInsensitive) || QString::fromUtf8(info.fileSystemType()).contains(QStringLiteral("msdos"), Qt::CaseInsensitive))
-                && ((!isMacHost()) || info.rootPath().startsWith(QStringLiteral("/volumes/"), Qt::CaseInsensitive))
-                && ((!isLinuxHost()) || info.rootPath().startsWith(QStringLiteral("/media/"), Qt::CaseInsensitive) || info.rootPath().startsWith(QStringLiteral("/mnt/"), Qt::CaseInsensitive) || info.rootPath().startsWith(QStringLiteral("/run/"), Qt::CaseInsensitive)))
+                QStringList drives;
+
+                foreach(const QStorageInfo &info, QStorageInfo::mountedVolumes())
                 {
-                    drives.append(info.rootPath());
-                }
-            }
-
-            QString drive;
-
-            if(drives.isEmpty())
-            {
-                QMessageBox::critical(this,
-                    tr("Program SD Card"),
-                    tr("No SD Cards found!"));
-            }
-            else if(drives.size() == 1)
-            {
-                drive = drives.first();
-                m_settings->setValue(QStringLiteral(LAST_PROGRAM_SD_CARD), drive);
-            }
-            else
-            {
-                int index = drives.indexOf(m_settings->value(QStringLiteral(LAST_PROGRAM_SD_CARD)).toString());
-
-                bool ok;
-                QString temp = QInputDialog::getItem(this,
-                    tr("Program SD Card"), tr("Please select an SD Card"),
-                    drives, (index != -1) ? index : 0, false, &ok,
-                    Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
-                    (isMacHost() ? Qt::WindowType() : Qt::WindowCloseButtonHint));
-
-                if(ok)
-                {
-                    drive = temp;
-                    m_settings->setValue(QStringLiteral(LAST_PROGRAM_SD_CARD), drive);
-                }
-            }
-
-            if(!drive.isEmpty())
-            {
-                bool ok = true;
-                QStringList list = QDir(userResourcePath() + QStringLiteral("/firmware")).entryList(QDir::Dirs | QDir::NoDotAndDotDot);
-
-                QApplication::setOverrideCursor(Qt::WaitCursor);
-                QApplication::processEvents();
-
-                foreach(const QString &dir, list)
-                {
-                    if(!removeRecursively(drive + QLatin1Char('/') + dir))
+                    if(info.isValid()
+                    && info.isReady()
+                    && (!info.isRoot())
+                    && (!info.isReadOnly())
+                    && (QString::fromUtf8(info.fileSystemType()).contains(QStringLiteral("fat"), Qt::CaseInsensitive) || QString::fromUtf8(info.fileSystemType()).contains(QStringLiteral("msdos"), Qt::CaseInsensitive))
+                    && ((!isMacHost()) || info.rootPath().startsWith(QStringLiteral("/volumes/"), Qt::CaseInsensitive))
+                    && ((!isLinuxHost()) || info.rootPath().startsWith(QStringLiteral("/media/"), Qt::CaseInsensitive) || info.rootPath().startsWith(QStringLiteral("/mnt/"), Qt::CaseInsensitive) || info.rootPath().startsWith(QStringLiteral("/run/"), Qt::CaseInsensitive)))
                     {
-                        QApplication::restoreOverrideCursor();
-                        QApplication::processEvents();
-
-                        QMessageBox::critical(this,
-                            tr("Program SD Card"),
-                            tr("Please close any programs that are viewing/editing the SD card!"));
-
-                        ok = false;
-                        break;
+                        drives.append(info.rootPath());
                     }
                 }
 
-                if(ok)
+                QString drive;
+
+                if(drives.isEmpty())
                 {
+                    QMessageBox::critical(this,
+                        tr("Program SD Card"),
+                        tr("No SD Cards found!"));
+                }
+                else if(drives.size() == 1)
+                {
+                    drive = drives.first();
+                    m_settings->setValue(QStringLiteral(LAST_PROGRAM_SD_CARD), drive);
+                }
+                else
+                {
+                    int index = drives.indexOf(m_settings->value(QStringLiteral(LAST_PROGRAM_SD_CARD)).toString());
+
+                    bool ok;
+                    QString temp = QInputDialog::getItem(this,
+                        tr("Program SD Card"), tr("Please select an SD Card"),
+                        drives, (index != -1) ? index : 0, false, &ok,
+                        Qt::MSWindowsFixedSizeDialogHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint |
+                        (isMacHost() ? Qt::WindowType() : Qt::WindowCloseButtonHint));
+
+                    if(ok)
+                    {
+                        drive = temp;
+                        m_settings->setValue(QStringLiteral(LAST_PROGRAM_SD_CARD), drive);
+                    }
+                }
+
+                if(!drive.isEmpty())
+                {
+                    bool ok = true;
+                    QStringList list = QDir(userResourcePath() + QStringLiteral("/firmware")).entryList(QDir::Dirs | QDir::NoDotAndDotDot);
+
+                    QApplication::setOverrideCursor(Qt::WaitCursor);
+                    QApplication::processEvents();
+
                     foreach(const QString &dir, list)
                     {
-                        if(!copyRecursively(userResourcePath() + QStringLiteral("/firmware/") + dir, drive + QLatin1Char('/') + dir))
+                        if(!removeRecursively(drive + QLatin1Char('/') + dir))
                         {
                             QApplication::restoreOverrideCursor();
                             QApplication::processEvents();
@@ -778,18 +767,54 @@ bool OpenMVSWD::programSDCard2(bool noMessage)
                             break;
                         }
                     }
-                }
 
-                if(ok)
-                {
-                    QApplication::restoreOverrideCursor();
-                    QApplication::processEvents();
+                    if(ok)
+                    {
+                        if(answer == QMessageBox::Yes)
+                        {
+                            if(!copyRecursively(userResourcePath() + QStringLiteral("/firmware/OPENMV4P"), drive + QStringLiteral("/OPENMV4")))
+                            {
+                                QApplication::restoreOverrideCursor();
+                                QApplication::processEvents();
 
-                    QMessageBox::information(this,
-                        tr("Program SD Card"),
-                        tr("SD card update complete!"));
+                                QMessageBox::critical(this,
+                                    tr("Program SD Card"),
+                                    tr("Please close any programs that are viewing/editing the SD card!"));
 
-                    return true;
+                                ok = false;
+                            }
+                        }
+                        else
+                        {
+                            foreach(const QString &dir, list)
+                            {
+                                if(!copyRecursively(userResourcePath() + QStringLiteral("/firmware/") + dir, drive + QLatin1Char('/') + dir))
+                                {
+                                    QApplication::restoreOverrideCursor();
+                                    QApplication::processEvents();
+
+                                    QMessageBox::critical(this,
+                                        tr("Program SD Card"),
+                                        tr("Please close any programs that are viewing/editing the SD card!"));
+
+                                    ok = false;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if(ok)
+                    {
+                        QApplication::restoreOverrideCursor();
+                        QApplication::processEvents();
+
+                        QMessageBox::information(this,
+                            tr("Program SD Card"),
+                            tr("SD card update complete!"));
+
+                        return true;
+                    }
                 }
             }
         }
