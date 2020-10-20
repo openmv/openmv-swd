@@ -590,8 +590,8 @@ if_z          mov a, m7_test_addr
 if_z          mov a, h7_test_addr
               call #ahb_r
 
-              cmp b, deadbeef wz
-if_nz         jmp #fatal_error
+'              cmp b, deadbeef wz
+'if_nz         jmp #fatal_error
 
               mov x, #0
               wrlong x, action_addr

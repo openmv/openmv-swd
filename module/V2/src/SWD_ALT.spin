@@ -481,8 +481,8 @@ if_z          mov a, m4_test_addr
 if_z          mov a, m7_test_addr
               call #ahb_r
 
-              cmp b, deadbeef wz
-if_nz         jmp #sub_fini_l
+'              cmp b, deadbeef wz
+'if_nz         jmp #sub_fini_l
 
               mov x, #0
               wrlong x, action_addr
